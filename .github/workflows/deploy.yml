@@ -1,0 +1,40 @@
+name: Deploy site
+
+# Deploys to the self-host VM over SSH, using the same restricted deploy key as
+# nikaVSimulator/stmVSimulator (can ONLY run one of a fixed set of deploy.sh
+# scripts server-side — see ~/bin/gha-deploy-dispatch.sh on the host — no
+# general shell access, no port/agent forwarding, no pty).
+#
+# Required repo secrets (Settings > Secrets and variables > Actions) — reuse
+# the same values already configured on nikaVSimulator/stmVSimulator:
+#   DEPLOY_SSH_KEY  — private half of the gha_deploy keypair on the host
+#   DEPLOY_HOST     — VM public IP (or hostname once the domain is live)
+#   DEPLOY_USER     — SSH user on the VM (ubuntu)
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check secrets are configured
+        id: guard
+        run: |
+          if [ -z "${{ secrets.DEPLOY_SSH_KEY }}" ]; then
+            echo "::notice::No DEPLOY_SSH_KEY secret — deploy not configured yet. Skipping."
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Deploy over SSH
+        if: steps.guard.outputs.configured == 'true'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 5m
+          script: deploy portfolio

@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pontsho Mbizo — pontshoOS</title>
+<meta name="description" content="Pontsho Mbizo — Electrical &amp; Computer Engineer. Portfolio presented as a desktop OS.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%237d2a10'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%23e8863c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;height:100%;background:#0b0a09;overflow:hidden;}
+  *{box-sizing:border-box;}
+  ::selection{background:rgba(232,134,60,.35);}
+  @keyframes winopen{from{opacity:0;transform:translate(-50%,-48%) scale(.965);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
+  @keyframes dockbounce{0%,100%{transform:translateY(0);}38%{transform:translateY(-15px);}}
+  @keyframes ovin{from{opacity:0;transform:scale(1.04);}to{opacity:1;transform:scale(1);}}
+  @keyframes ctxin{from{opacity:0;transform:scale(.94) translateY(-4px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:6px;border:2px solid transparent;background-clip:content-box;}
+  button{font-family:inherit;}
+  a{text-decoration:none;}
+  .hoverable:hover{ background: var(--hover-bg, rgba(255,255,255,.07)); }
+</style>
+</head>
+<body>
+<div id="root" style="position:relative;width:100%;height:100vh;overflow:hidden;font-family:'Cantarell',system-ui,sans-serif;background:#0b0a09;color:#ece7e1;"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // Data
+  // ---------------------------------------------------------------------
+  var walls = [
+    'radial-gradient(120% 95% at 50% 16%, rgba(64,196,186,.34), rgba(64,196,186,0) 34%), linear-gradient(180deg,#4e1a0d 0%,#7d2a10 34%,#b0491a 66%,#d9853c 100%)',
+    'radial-gradient(120% 90% at 68% 20%, rgba(126,146,255,.30), transparent 42%), linear-gradient(180deg,#0c1030 0%,#1a1f4a 55%,#2b2f66 100%)',
+    'radial-gradient(110% 85% at 30% 20%, rgba(64,220,160,.30), transparent 46%), linear-gradient(180deg,#0f1c1a 0%,#20443c 55%,#3a5a6e 100%)'
+  ];
+
+  var core = [
+    { id: 'about', name: 'About Me', kind: 'about', color: '#e8863c', label: 'A' },
+    { id: 'files', name: 'Files', kind: 'files', color: '#3f7bd6', label: 'F' },
+    { id: 'blog', name: 'Blog', kind: 'blog', color: '#b8632a', label: 'B' },
+    { id: 'terminal', name: 'Terminal', kind: 'terminal', color: '#2c2a26', label: '>' }
+  ];
+
+  // Live app launch links (nip.io for now — swap to the real subdomains once
+  // pontsho-mbizo.com's DNS is live; nginx already accepts both host names).
+  var LIVE = {
+    nika: 'http://nika.84.8.139.133.nip.io/',
+    stm: 'http://stm.84.8.139.133.nip.io/'
+  };
+
+  var projects = [
+    {
+      id: 'nikavsim', name: 'nikaVSimulator', full: 'nikaVSimulator — FPGA / Verilog simulator', year: '2025',
+      color: '#8a63d2', label: 'V', tags: ['FPGA', 'Verilog', 'Hardware Simulation'],
+      desc: [
+        'An in-browser simulator for the Tang Nano 9K FPGA. Write Verilog in a Monaco editor, run it through a sandboxed Icarus Verilog backend, and watch the board’s pins and waveforms come alive without touching real hardware.',
+        'The simulation backend runs untrusted HDL inside locked-down, network-less containers on a rootless Podman socket — full isolation from the host even if the input is hostile.'
+      ],
+      highlights: [
+        'Live board pin overlay synced to the simulated waveform.',
+        'Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.',
+        'Deployed self-host, embeddable cross-origin by other tools.'
+      ],
+      links: [ { label: 'Launch Simulator', url: LIVE.nika } ]
+    },
+    {
+      id: 'stmsim', name: 'STM Simulator', full: 'stmVSimulator — STM32 peripheral simulator', year: '2025',
+      color: '#d98a2b', label: 'S', tags: ['Embedded', 'C', 'Emulation'],
+      desc: [
+        'A simulator for the STM32 "Blue Pill" that lets bare-metal C firmware be tested without the physical board in hand — faster iteration, and CI that doesn’t need hardware in the loop.',
+        'Compiles and runs firmware through a sandboxed QEMU backend, then renders the resulting GPIO/peripheral trace on a live board view.'
+      ],
+      highlights: [
+        'Models core peripherals closely enough to run real firmware.',
+        'Turns "flash and pray" into a tight edit-run loop.',
+        'Useful when hardware is shared or unavailable.'
+      ],
+      links: [ { label: 'Launch Simulator', url: LIVE.stm } ]
+    },
+    {
+      id: 'nilm', name: 'SA Grid NILM', full: 'South African Grid NILM Research', year: '2025 – 26',
+      color: '#2aa39a', label: 'N', tags: ['Signal Processing', 'Machine Learning', 'Energy'],
+      desc: [
+        'Research into Non-Intrusive Load Monitoring (NILM): disaggregating the power draw of individual household appliances from a single, whole-house smart-meter signal — no per-device sensors required.',
+        'The work is tuned for the South African context, where load-shedding and an unstable grid break many of the assumptions baked into NILM datasets from elsewhere.'
+      ],
+      highlights: [
+        'Built a preprocessing pipeline robust to grid interruptions and missing windows.',
+        'Compared classical event detection against sequence models for disaggregation.',
+        'Framed accuracy around the appliances that matter for demand-side management.'
+      ],
+      links: []
+    },
+    {
+      id: 'cubitedge', name: 'CubitEdge', full: 'CubitEdge — self-hosted DevOps platform', year: '2025',
+      color: '#3f7bd6', label: 'C', tags: ['DevOps', 'Self-hosted', 'Infrastructure'],
+      desc: [
+        'A self-hosted DevOps platform that bundles git hosting, CI runners and a container registry into a single, deployable stack — so a small team can own its whole pipeline.',
+        'Born from wanting to understand my toolchain end-to-end instead of stitching together someone else’s black boxes.'
+      ],
+      highlights: [
+        'One-command deploy of git + CI + container registry.',
+        'Container-based runners with build caching.',
+        'Feasibility study weighing Forgejo against building from scratch.'
+      ],
+      links: []
+    },
+    {
+      id: 'eggtheory', name: 'Egg Theory', full: 'Egg Theory — Action RPG', year: '2024',
+      color: '#d0452b', label: 'E', tags: ['Game Dev', 'Design', 'Gameplay'],
+      desc: [
+        'An action-RPG side project — a playground for gameplay systems, combat feel and the kind of design problems that have nothing to do with my engineering coursework.',
+        'A reminder that I’m drawn to ideas broadly; the restlessness across domains is part of the point.'
+      ],
+      highlights: [
+        'Designed the core combat loop and enemy behaviours.',
+        'Hand-tuned game feel: hit-stop, knockback, timing windows.',
+        'Built as a deliberate break from hardware work.'
+      ],
+      links: []
+    },
+    {
+      id: 'siggen', name: 'Signal Gen', full: 'Programmable Signal Generator', year: '2024',
+      color: '#e8863c', label: 'G', tags: ['Hardware', 'PCB', 'DSP'],
+      desc: [
+        'A programmable signal generator taken from requirements through CAD and firmware — a full-stack hardware project from schematic capture to a working board.'
+      ],
+      highlights: [
+        'Requirements capture, schematic and PCB layout.',
+        'Firmware for waveform synthesis and control.',
+        'End-to-end ownership from spec to bring-up.'
+      ],
+      links: []
+    }
+  ];
+
+  var posts = [
+    {
+      title: "Getting the 'why' right before the build", date: 'Jun 2026', tag: 'Essay',
+      pars: [
+        'It’s tempting to start building the moment a problem is handed to you. The tools are right there, the deadline is real, and typing feels like progress. I’ve learned to resist that pull.',
+        'Before I reach for a tool, I try to understand the fundamentals of what I’m actually solving. Getting the why right — why this approach, why this constraint matters, why the obvious solution fails — saves far more time than moving fast ever does.',
+        'It also means giving myself room to be wrong early, when being wrong is cheap. A wrong assumption caught on paper costs an afternoon. The same assumption caught in silicon costs a semester.'
+      ]
+    },
+    {
+      title: 'What NILM taught me about noisy signals', date: 'May 2026', tag: 'Signals',
+      pars: [
+        'Non-intrusive load monitoring asks a deceptively simple question: given one aggregate power signal for a whole house, can you tell which appliances are running?',
+        'The hard part isn’t the model. It’s that the real signal is a mess — overlapping loads, sensor noise, and a grid that, in South Africa, is anything but steady. Load-shedding turns your clean training distribution into a rumour.',
+        'The lesson that stuck: spend your effort understanding the signal before you tune the model. Most of my accuracy gains came from framing the problem, not from a fancier network.'
+      ]
+    },
+    {
+      title: 'Notes on self-hosting my whole toolchain', date: 'Apr 2026', tag: 'Infra',
+      pars: [
+        'I wanted my git hosting, CI and container registry to live on hardware I control. CubitEdge started as that itch — one deployable stack instead of five SaaS logins.',
+        'Self-hosting teaches you how the tools you take for granted actually fit together. You stop seeing "CI" as a magic button and start seeing runners, queues and caches.',
+        'Is it more work? Sometimes. But I understand my pipeline now in a way I never did when it was someone else’s black box.'
+      ]
+    }
+  ];
+
+  var skills = ['Embedded Systems', 'Digital Signal Processing', 'FPGA / HDL', 'C / C++', 'Python', 'Machine Learning', 'PCB Design', 'High-Performance Computing', 'Control Systems'];
+
+  var CONTACT = { email: 'pontshombizo329@gmail.com', github: 'github.com/PontshoMbizo', linkedin: 'www.linkedin.com/in/pontshombizo' };
+
+  // ---------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------
+  var state = {
+    booted: false, boot: 0,
+    active: null, overview: false, query: '',
+    blogPost: null, filesPath: 'Projects',
+    ctx: { open: false, x: 0, y: 0 }, wallpaper: 0,
+    time: '', date: '',
+    termInput: '', termLog: [], launched: null
+  };
+
+  var root = document.getElementById('root');
+  var clockId, bootId;
+
+  function setState(patch) {
+    if (typeof patch === 'function') patch = patch(state);
+    if (!patch) return;
+    Object.assign(state, patch);
+    render();
+  }
+
+  // ---------------------------------------------------------------------
+  // Derived data helpers
+  // ---------------------------------------------------------------------
+  function allApps() {
+    return core.concat(projects.map(function (p) { return { id: p.id, name: p.name, kind: 'letter', color: p.color, label: p.label }; }));
+  }
+  function filteredApps() {
+    var q = state.query.trim().toLowerCase();
+    var all = allApps();
+    return q ? all.filter(function (a) { return a.name.toLowerCase().indexOf(q) !== -1; }) : all;
+  }
+  function filesFor(path) {
+    if (path === 'Projects') return projects.map(function (p) { return { name: p.name, kind: 'letter', color: p.color, label: p.label, open: function () { open(p.id); } }; });
+    if (path === 'Blog') return posts.map(function (p, i) { return { name: p.title, kind: 'doc', color: '#8a8378', label: '', open: function () { openPost(i); } }; });
+    return [
+      { name: 'About Me.txt', kind: 'doc', color: '#8a8378', label: '', open: function () { open('about'); } },
+      { name: 'CV — Pontsho Mbizo.pdf', kind: 'doc', color: '#8a8378', label: '', open: function () { open('about'); } },
+      { name: 'NILM Research.md', kind: 'doc', color: '#8a8378', label: '', open: function () { open('nilm'); } },
+      { name: 'references.bib', kind: 'doc', color: '#8a8378', label: '', open: function () { open('nilm'); } }
+    ];
+  }
+
+  // ---------------------------------------------------------------------
+  // Actions
+  // ---------------------------------------------------------------------
+  function open(id) {
+    setState({ active: id, overview: false, ctx: { open: false, x: 0, y: 0 }, launched: id });
+    setTimeout(function () { if (state.launched === id) setState({ launched: null }); }, 560);
+  }
+  function openPost(i) { setState({ active: 'blog', blogPost: i, overview: false, ctx: { open: false, x: 0, y: 0 } }); }
+  function blogBack() { setState({ blogPost: null }); }
+  function toggleOverview() { setState({ overview: !state.overview, query: '', ctx: { open: false, x: 0, y: 0 } }); }
+  function closeOverview() { setState({ overview: false }); }
+  function closeWindow() { setState({ active: null }); }
+  function setFiles(p) { setState({ filesPath: p }); }
+  function setWall(i) { setState({ wallpaper: i, ctx: { open: false, x: 0, y: 0 } }); }
+  function onDeskContext(e) { e.preventDefault(); setState({ ctx: { open: true, x: e.clientX, y: e.clientY } }); }
+  function onDeskClick() { if (state.ctx.open) setState({ ctx: { open: false, x: 0, y: 0 } }); }
+  function onSearchInput(e) { setState({ query: e.target.value }); }
+  function onSearchKey(e) { if (e.key === 'Enter') { var l = filteredApps(); if (l[0]) open(l[0].id); } }
+  function onTermInput(e) { state.termInput = e.target.value; } // no re-render needed until Enter
+  function onTermKey(e) { if (e.key === 'Enter') { e.preventDefault(); runCmd(state.termInput); } }
+  function focusTerm() { var el = document.getElementById('term-input'); if (el) el.focus(); }
+  function stop(e) { e.stopPropagation(); }
+
+  function tick() {
+    var d = new Date();
+    var h = d.getHours(), m = d.getMinutes();
+    var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12; if (h === 0) h = 12;
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    setState({ time: h + ':' + String(m).padStart(2, '0') + ' ' + ap, date: months[d.getMonth()] + ' ' + d.getDate() });
+  }
+
+  function runCmd(raw) {
+    var cmd = (raw || '').trim();
+    var parts = cmd.split(/\s+/);
+    var c = (parts[0] || '').toLowerCase();
+    var arg = parts[1];
+    var lines = []; var openId = null;
+    if (c === '') { lines = []; }
+    else if (c === 'help') {
+      lines = ['pontshoOS — available commands', '', '  help              this help', '  ls                list apps', '  about             open About Me', '  projects          list projects', '  open <id>         open an app / project', '  blog              open the blog', '  contact           how to reach me', '  neofetch          system info', '  clear             clear the screen'];
+    } else if (c === 'ls') {
+      lines = ['about   blog   files   terminal', 'projects   contact'];
+    } else if (c === 'whoami') {
+      lines = ['Pontsho Mbizo — Electrical & Computer Engineer, UCT'];
+    } else if (c === 'about') { openId = 'about'; lines = ['Opening About Me…']; }
+    else if (c === 'blog') { openId = 'blog'; lines = ['Opening Blog…']; }
+    else if (c === 'files') { openId = 'files'; lines = ['Opening Files…']; }
+    else if (c === 'projects') {
+      lines = ['Projects — open with: open <id>', ''].concat(projects.map(function (p) { return '  ' + p.id.padEnd(12) + p.full; }));
+    } else if (c === 'open') {
+      var t = (arg || '').toLowerCase();
+      var ids = ['about', 'blog', 'files', 'terminal'].concat(projects.map(function (p) { return p.id; }));
+      if (ids.indexOf(t) !== -1) { openId = t; lines = ['Opening ' + t + '…']; }
+      else { lines = ["open: no such app: '" + (arg || '') + "'   (try: projects)"]; }
+    } else if (c === 'contact') {
+      lines = ['email     ' + CONTACT.email, 'github    ' + CONTACT.github, 'linkedin  ' + CONTACT.linkedin];
+    } else if (c === 'neofetch') {
+      lines = ['pontsho@pontshoOS', '-----------------', 'OS       pontshoOS 1.0 (web)', 'Host     Portfolio', 'Kernel   JavaScript', 'Uptime   final year', 'Shell    pontsho-sh', 'Role     ECE @ University of Cape Town', 'Focus    embedded · DSP · HPC · hardware', 'Theme    Desert (warm)'];
+    } else if (c === 'date') { lines = [new Date().toString()]; }
+    else if (c === 'echo') { lines = [parts.slice(1).join(' ')]; }
+    else if (c === 'sudo') { lines = ['Permission denied: you are already root of your own story.']; }
+    else if (c === 'clear') { setState({ termLog: [], termInput: '' }); return; }
+    else { lines = ['pontsho-sh: command not found: ' + c, "type 'help' for a list of commands"]; }
+    state.termLog = state.termLog.concat([{ cmd: raw, lines: lines }]);
+    state.termInput = '';
+    render();
+    if (openId) open(openId);
+  }
+
+  // ---------------------------------------------------------------------
+  // Icon rendering (mirrors AppIcon.dc.html)
+  // ---------------------------------------------------------------------
+  function appIcon(kind, color, label, size) {
+    var glyphSize = Math.round(size * 0.42);
+    var svgSize = Math.round(size * 0.56);
+    var bg = color || '#3f7bd6';
+    var inner = '';
+    if (kind === 'terminal') {
+      inner = '<span style="font-family:\'JetBrains Mono\',ui-monospace,monospace;font-weight:700;font-size:' + glyphSize + 'px;letter-spacing:-1px;">&gt;_</span>';
+    } else if (kind === 'files') {
+      inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="3" y="5" width="9" height="4" rx="1.6" fill="#fff"></rect><rect x="3" y="7.5" width="18" height="12" rx="2.4" fill="#fff"></rect><rect x="3" y="10.5" width="18" height="1.4" fill="rgba(0,0,0,.12)"></rect></svg>';
+    } else if (kind === 'blog') {
+      inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="2.6" rx="1.3" fill="#fff"></rect><rect x="4" y="11" width="16" height="2.6" rx="1.3" fill="#fff"></rect><rect x="4" y="16" width="10" height="2.6" rx="1.3" fill="#fff"></rect></svg>';
+    } else if (kind === 'about') {
+      inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#fff"></circle><rect x="4.5" y="14" width="15" height="9" rx="4.5" fill="#fff"></rect></svg>';
+    } else if (kind === 'doc') {
+      inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="#fff"></rect><polygon points="14,3 19,8 14,8" fill="rgba(0,0,0,.16)"></polygon><rect x="8" y="11" width="8" height="1.4" rx=".7" fill="' + bg + '"></rect><rect x="8" y="14" width="8" height="1.4" rx=".7" fill="' + bg + '"></rect><rect x="8" y="17" width="5" height="1.4" rx=".7" fill="' + bg + '"></rect></svg>';
+    } else {
+      inner = '<span style="font-weight:700;font-size:' + glyphSize + 'px;">' + esc(label || '?') + '</span>';
+    }
+    return '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:24%;background:' + bg + ';display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.15);color:#fff;font-family:\'Cantarell\',system-ui,sans-serif;overflow:hidden;flex:none;">' + inner + '</div>';
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // ---------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------
+  var UID = 0;
+  function nextId(prefix) { return prefix + (++UID); }
+
+  function render() {
+    var st = state;
+    var active = st.active;
+    var isProjectActive = projects.some(function (p) { return p.id === active; });
+    var proj = projects.filter(function (p) { return p.id === active; })[0] || { full: '', name: '', year: '', color: '#333', label: '', tags: [], desc: [], highlights: [], links: [] };
+    var titleMap = { about: 'About Me', files: 'Files', blog: (st.blogPost != null ? posts[st.blogPost].title : 'Blog'), terminal: 'Terminal' };
+    var windowTitle = isProjectActive ? proj.full : (titleMap[active] || '');
+
+    var html = '';
+
+    // WALLPAPER
+    html += '<div onclick="App.onDeskClick()" oncontextmenu="App.onDeskContext(event)" style="position:absolute;inset:0;background:' + walls[st.wallpaper] + ';transition:background .6s ease;"></div>';
+    html += '<div onclick="App.onDeskClick()" oncontextmenu="App.onDeskContext(event)" style="position:absolute;inset:0;background:radial-gradient(130% 120% at 50% 40%, transparent 55%, rgba(0,0,0,.45) 100%);pointer-events:none;"></div>';
+
+    // TOP BAR
+    html += '<div style="position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:rgba(20,18,16,.66);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:40;font-size:13px;">'
+      + '<button onclick="App.toggleOverview()" class="hoverable" style="background:none;border:none;color:#ece7e1;font:inherit;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:8px;">Activities</button>'
+      + '<div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:12px;font-weight:700;color:#f4efe9;"><span>' + esc(st.date) + '</span><span>' + esc(st.time) + '</span></div>'
+      + '<div style="display:flex;align-items:center;gap:11px;color:#f4efe9;">'
+      + '<svg width="17" height="14" viewBox="0 0 17 14"><rect x="0" y="9" width="3" height="5" rx="1" fill="#f4efe9"></rect><rect x="4.6" y="6" width="3" height="8" rx="1" fill="#f4efe9"></rect><rect x="9.2" y="3" width="3" height="11" rx="1" fill="#f4efe9"></rect><rect x="13.8" y="0" width="3" height="14" rx="1" fill="rgba(244,239,233,.35)"></rect></svg>'
+      + '<svg width="16" height="14" viewBox="0 0 16 14"><polygon points="0,5 4,5 8,1 8,13 4,9 0,9" fill="#f4efe9"></polygon><path d="M11 4 A4 4 0 0 1 11 10" stroke="#f4efe9" stroke-width="1.4" fill="none"></path></svg>'
+      + '<svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.6" y="0.6" width="21" height="11.8" rx="3" fill="none" stroke="#f4efe9" stroke-width="1.2"></rect><rect x="22.5" y="4" width="2.4" height="5" rx="1" fill="#f4efe9"></rect><rect x="2.2" y="2.2" width="17.8" height="8.6" rx="1.6" fill="#f4efe9"></rect></svg>'
+      + '<span style="font-weight:700;">100%</span></div></div>';
+
+    // WINDOW
+    if (active) {
+      html += '<div style="position:absolute;top:calc(50% + 8px);left:50%;transform:translate(-50%,-50%);width:min(1080px,90vw);height:80vh;background:#221f19;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;display:flex;flex-direction:column;z-index:35;animation:winopen .3s cubic-bezier(.2,.85,.25,1);">'
+        + '<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 16px;background:#2b2620;border-bottom:1px solid rgba(255,255,255,.07);">'
+        + '<span style="font-weight:700;font-size:14px;color:#f4efe9;">' + esc(windowTitle) + '</span>'
+        + '<button onclick="App.closeWindow()" title="Close" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:#ece7e1;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>'
+        + '</div><div style="flex:1;overflow-y:auto;overflow-x:hidden;">';
+
+      if (active === 'about') html += renderAbout();
+      else if (active === 'files') html += renderFiles(st);
+      else if (active === 'blog') html += renderBlog(st);
+      else if (active === 'terminal') html += renderTerminal(st);
+      else if (isProjectActive) html += renderProject(proj);
+
+      html += '</div></div>';
+    }
+
+    // ACTIVITIES OVERVIEW
+    if (st.overview) {
+      var apps = filteredApps();
+      html += '<div onclick="App.closeOverview()" style="position:absolute;inset:0;z-index:60;background:rgba(15,13,11,.82);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);display:flex;flex-direction:column;align-items:center;padding-top:70px;animation:ovin .22s ease;">'
+        + '<div onclick="App.stop(event)" style="width:min(560px,80vw);"><div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px 20px;">'
+        + '<svg width="18" height="18" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="2"></circle><line x1="16" y1="16" x2="21" y2="21" stroke="rgba(255,255,255,.6)" stroke-width="2" stroke-linecap="round"></line></svg>'
+        + '<input id="search-input" value="' + esc(st.query) + '" oninput="App.onSearchInput(event)" onkeydown="App.onSearchKey(event)" placeholder="Type to search" spellcheck="false" style="flex:1;background:none;border:none;outline:none;color:#fff;font-family:inherit;font-size:17px;"></div></div>'
+        + '<div onclick="App.stop(event)" style="margin-top:56px;width:min(760px,86vw);display:flex;flex-wrap:wrap;gap:20px 34px;justify-content:center;">'
+        + apps.map(function (a) {
+            return '<button onclick="App.open(\'' + a.id + '\')" class="hoverable" style="display:flex;flex-direction:column;align-items:center;gap:11px;width:110px;padding:14px 6px;border:none;border-radius:16px;background:none;cursor:pointer;color:#f4efe9;">'
+              + appIcon(a.kind, a.color, a.label, 72)
+              + '<span style="font-size:13.5px;text-align:center;line-height:1.3;">' + esc(a.name) + '</span></button>';
+          }).join('')
+        + '</div></div>';
+    }
+
+    // DOCK
+    var dockIds = ['about', 'files', 'blog', 'terminal', 'nikavsim', 'stmsim', 'nilm'];
+    var byId = {}; allApps().forEach(function (a) { byId[a.id] = a; });
+    html += '<div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:10px;padding:9px 13px;background:rgba(20,18,16,.64);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.09);border-radius:22px;z-index:41;box-shadow:0 14px 44px rgba(0,0,0,.45);">'
+      + dockIds.map(function (id) {
+          var a = byId[id]; if (!a) return '';
+          var anim = st.launched === id ? 'dockbounce .5s ease' : 'none';
+          var dot = st.active === id ? '#f4b880' : 'transparent';
+          return '<button onclick="App.open(\'' + id + '\')" title="' + esc(a.name) + '" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;animation:' + anim + ';transition:transform .16s ease;">'
+            + appIcon(a.kind, a.color, a.label, 50)
+            + '<span style="width:5px;height:5px;border-radius:50%;background:' + dot + ';"></span></button>';
+        }).join('')
+      + '<div style="width:1px;align-self:stretch;background:rgba(255,255,255,.14);margin:2px 3px;"></div>'
+      + '<button onclick="App.toggleOverview()" title="Show Applications" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .16s ease;">'
+      + '<div style="width:50px;height:50px;border-radius:24%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:12px;align-content:center;justify-items:center;">'
+      + '<span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span>'
+      + '<span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span>'
+      + '<span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span><span style="width:6px;height:6px;border-radius:50%;background:#f4efe9;"></span></div>'
+      + '<span style="width:5px;height:5px;border-radius:50%;background:transparent;"></span></button></div>';
+
+    // CONTEXT MENU
+    if (st.ctx.open) {
+      html += '<div style="position:absolute;top:' + st.ctx.y + 'px;left:' + st.ctx.x + 'px;z-index:70;min-width:210px;background:rgba(38,34,28,.96);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:7px;box-shadow:0 18px 48px rgba(0,0,0,.55);animation:ctxin .13s ease;font-size:14px;">'
+        + '<button onclick="App.open(\'terminal\')" class="hoverable" style="width:100%;text-align:left;padding:9px 12px;border:none;border-radius:8px;background:none;color:#ece7e1;font:inherit;cursor:pointer;">Open Terminal</button>'
+        + '<button onclick="App.open(\'files\')" class="hoverable" style="width:100%;text-align:left;padding:9px 12px;border:none;border-radius:8px;background:none;color:#ece7e1;font:inherit;cursor:pointer;">Open Files</button>'
+        + '<div style="height:1px;background:rgba(255,255,255,.1);margin:5px 4px;"></div>'
+        + '<div style="padding:6px 12px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(236,231,225,.45);">Background</div>'
+        + '<div style="display:flex;gap:8px;padding:0 12px 8px;">'
+        + '<button onclick="App.setWall(0)" title="Desert" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#7d2a10,#d9853c);"></button>'
+        + '<button onclick="App.setWall(1)" title="Night" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#141a44,#2b2f66);"></button>'
+        + '<button onclick="App.setWall(2)" title="Aurora" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#122a24,#3a5a6e);"></button></div>'
+        + '<div style="height:1px;background:rgba(255,255,255,.1);margin:5px 4px;"></div>'
+        + '<button onclick="App.open(\'about\')" class="hoverable" style="width:100%;text-align:left;padding:9px 12px;border:none;border-radius:8px;background:none;color:#ece7e1;font:inherit;cursor:pointer;">About pontshoOS</button></div>';
+    }
+
+    // BOOT SCREEN
+    var bootOpacity = st.booted ? 0 : 1, bootPointer = st.booted ? 'none' : 'auto';
+    html += '<div style="position:absolute;inset:0;z-index:200;background:#0b0a09;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:' + bootOpacity + ';pointer-events:' + bootPointer + ';transition:opacity .7s ease;">'
+      + '<div style="width:88px;height:88px;border-radius:24%;background:linear-gradient(140deg,#e8863c,#c8542a);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(232,134,60,.35);margin-bottom:26px;position:relative;overflow:hidden;">'
+      + '<div style="width:34px;height:34px;border-radius:50%;background:#fff;position:relative;"></div>'
+      + '<div style="position:absolute;top:24px;right:22px;width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#e8863c,#c8542a);"></div></div>'
+      + '<div style="font-size:30px;font-weight:300;letter-spacing:1px;color:#f4efe9;">pontsho<span style="font-weight:700;color:#e8a06a;">OS</span></div>'
+      + '<div style="font-size:13px;color:rgba(236,231,225,.5);margin-top:8px;">Pontsho Mbizo · Portfolio</div>'
+      + '<div style="width:220px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;">'
+      + '<div style="height:100%;width:' + Math.round(st.boot) + '%;background:linear-gradient(90deg,#e8863c,#f4b880);border-radius:3px;transition:width .13s ease;"></div></div></div>';
+
+    root.innerHTML = html;
+    afterRender();
+  }
+
+  function renderAbout() {
+    var skillsHtml = skills.map(function (s) {
+      return '<span style="padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-size:13.5px;color:#ece7e1;">' + esc(s) + '</span>';
+    }).join('');
+    return '<div style="max-width:780px;margin:0 auto;padding:48px 40px 60px;">'
+      + '<div style="display:flex;align-items:center;gap:22px;margin-bottom:34px;">'
+      + '<div style="width:88px;height:88px;flex:none;border-radius:22%;background:linear-gradient(140deg,#e8863c,#c8542a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.35);">PM</div>'
+      + '<div><div style="font-size:28px;font-weight:700;letter-spacing:-.5px;">Pontsho Mbizo</div>'
+      + '<div style="font-size:16px;color:#e8a06a;margin-top:3px;">Electrical &amp; Computer Engineer</div>'
+      + '<div style="font-size:13px;color:rgba(236,231,225,.55);margin-top:6px;">Cape Town, South Africa &nbsp;·&nbsp; University of Cape Town &nbsp;·&nbsp; Final year</div></div></div>'
+      + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an Electrical and Computer Engineer in my final year at the University of Cape Town. My work sits at the intersection of hardware and computation — embedded systems, digital signal processing, high-performance computing and hardware design are the areas I keep returning to, in my studies and on my own time.</p>'
+      + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an engineer first. That means I care about things that actually work — not just things that look good on paper or pass a surface-level test. But I’ve learned that building things that work starts well before the build itself. I try to understand the fundamentals before I reach for the tools, and I give myself room to be wrong in that process — getting the <em style="color:#e8a06a;font-style:italic;">why</em> right matters more to me than moving fast.</p>'
+      + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 32px;">My curiosity doesn’t switch off when the problem is solved. I’m drawn to ideas broadly — across disciplines, industries and scales — and that restlessness is part of what makes me a better engineer. I’ve worked in defence and mining, built processors in a hardware description language, trained machine-learning models, designed control systems and written project-management tooling. The common thread isn’t the domain; it’s the drive to understand and to build.</p>'
+      + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin-bottom:14px;">Areas I work in</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:9px;">' + skillsHtml + '</div></div>';
+  }
+
+  function renderFiles(st) {
+    var folders = [{ key: 'Projects', name: 'Projects' }, { key: 'Documents', name: 'Documents' }, { key: 'Blog', name: 'Blog' }];
+    var foldersHtml = folders.map(function (f) {
+      var bg = st.filesPath === f.key ? 'rgba(232,134,60,.20)' : 'transparent';
+      return '<button onclick="App.setFiles(\'' + f.key + '\')" class="hoverable" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:9px 11px;margin-bottom:2px;border:none;border-radius:9px;background:' + bg + ';color:#ece7e1;font:inherit;font-size:14px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:2px;background:#e8863c;flex:none;"></span>' + esc(f.name) + '</button>';
+    }).join('');
+    var items = filesFor(st.filesPath);
+    var itemsHtml = items.map(function (it, i) {
+      return '<button onclick="App.filesOpen(' + i + ')" class="hoverable" style="display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 8px;border:none;border-radius:12px;background:none;cursor:pointer;color:#ece7e1;">'
+        + appIcon(it.kind, it.color, it.label, 54)
+        + '<span style="font-size:13px;text-align:center;line-height:1.3;max-width:110px;">' + esc(it.name) + '</span></button>';
+    }).join('');
+    window.__filesItems = items; // for filesOpen dispatch
+    return '<div style="display:flex;height:100%;min-height:400px;">'
+      + '<div style="width:210px;flex:none;background:#1c1913;border-right:1px solid rgba(255,255,255,.06);padding:16px 10px;">'
+      + '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(236,231,225,.4);padding:6px 10px 10px;">Places</div>'
+      + foldersHtml
+      + '<div style="height:1px;background:rgba(255,255,255,.07);margin:14px 6px;"></div>'
+      + '<div style="padding:8px 11px;font-size:13.5px;color:rgba(236,231,225,.4);">Recent</div>'
+      + '<div style="padding:8px 11px;font-size:13.5px;color:rgba(236,231,225,.4);">Starred</div>'
+      + '<div style="padding:8px 11px;font-size:13.5px;color:rgba(236,231,225,.4);">Trash</div></div>'
+      + '<div style="flex:1;display:flex;flex-direction:column;">'
+      + '<div style="height:44px;flex:none;display:flex;align-items:center;gap:8px;padding:0 20px;border-bottom:1px solid rgba(255,255,255,.06);font-size:14px;color:rgba(236,231,225,.7);">'
+      + '<span style="color:rgba(236,231,225,.45);">Home</span><span style="color:rgba(236,231,225,.3);">/</span><span style="color:#f4efe9;font-weight:700;">' + esc(st.filesPath) + '</span></div>'
+      + '<div style="flex:1;overflow:auto;padding:26px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:14px;align-content:start;">' + itemsHtml + '</div></div></div>';
+  }
+
+  function renderBlog(st) {
+    if (st.blogPost == null) {
+      var itemsHtml = posts.map(function (p, i) {
+        return '<button onclick="App.openPost(' + i + ')" class="hoverable" style="display:block;width:100%;text-align:left;padding:22px 22px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03);cursor:pointer;color:#ece7e1;">'
+          + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:9px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#e8863c;background:rgba(232,134,60,.14);padding:3px 9px;border-radius:6px;">' + esc(p.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(p.date) + '</span></div>'
+          + '<div style="font-size:18px;font-weight:700;margin-bottom:6px;">' + esc(p.title) + '</div>'
+          + '<div style="font-size:14.5px;line-height:1.6;color:rgba(236,231,225,.7);">' + esc(p.pars[0]) + '</div></button>';
+      }).join('');
+      return '<div style="max-width:760px;margin:0 auto;padding:46px 40px 60px;">'
+        + '<div style="font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;">Blog</div>'
+        + '<div style="font-size:14px;color:rgba(236,231,225,.55);margin-bottom:30px;">Notes on engineering, signals and building things that work.</div>' + itemsHtml + '</div>';
+    }
+    var post = posts[st.blogPost];
+    var parsHtml = post.pars.map(function (par) { return '<p style="font-size:16.5px;line-height:1.75;color:rgba(236,231,225,.88);margin:0 0 20px;">' + esc(par) + '</p>'; }).join('');
+    return '<div style="max-width:700px;margin:0 auto;padding:34px 40px 64px;">'
+      + '<button onclick="App.blogBack()" style="background:none;border:none;color:#e8a06a;font:inherit;font-size:14px;cursor:pointer;padding:6px 0;margin-bottom:22px;">&larr; All posts</button>'
+      + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#e8863c;background:rgba(232,134,60,.14);padding:3px 9px;border-radius:6px;">' + esc(post.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(post.date) + '</span></div>'
+      + '<h1 style="font-size:30px;font-weight:700;letter-spacing:-.6px;line-height:1.2;margin:0 0 26px;">' + esc(post.title) + '</h1>' + parsHtml + '</div>';
+  }
+
+  function renderTerminal(st) {
+    var logHtml = st.termLog.map(function (e) {
+      var linesHtml = e.lines.map(function (ln) { return '<div style="white-space:pre-wrap;color:rgba(216,210,198,.85);">' + esc(ln) + '</div>'; }).join('');
+      return '<div style="margin-top:4px;"><span style="color:#8ec07c;">pontsho@pontshoOS</span><span style="color:rgba(216,210,198,.6);">:~$</span> <span style="color:#f4efe9;">' + esc(e.cmd) + '</span></div>' + linesHtml;
+    }).join('');
+    return '<div onclick="App.focusTerm()" id="term-body" style="height:100%;overflow:auto;background:#141210;padding:18px 20px;font-family:\'JetBrains Mono\',ui-monospace,monospace;font-size:14px;line-height:1.65;color:#d8d2c6;cursor:text;">'
+      + '<div style="color:#e8a06a;">Welcome to pontshoOS terminal — v1.0</div>'
+      + '<div style="color:rgba(216,210,198,.6);margin-bottom:14px;">Type <span style="color:#8ec07c;">help</span> to get started.</div>'
+      + logHtml
+      + '<div style="display:flex;align-items:center;margin-top:4px;"><span style="color:#8ec07c;">pontsho@pontshoOS</span><span style="color:rgba(216,210,198,.6);">:~$</span>&nbsp;'
+      + '<input id="term-input" value="' + esc(st.termInput) + '" oninput="App.onTermInput(event)" onkeydown="App.onTermKey(event)" spellcheck="false" autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#f4efe9;font-family:inherit;font-size:14px;padding:0;caret-color:#e8863c;"></div></div>';
+  }
+
+  function renderProject(proj) {
+    var tagsHtml = proj.tags.map(function (t) { return '<span style="padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-size:13px;color:#ece7e1;">' + esc(t) + '</span>'; }).join('');
+    var descHtml = proj.desc.map(function (d) { return '<p style="font-size:16.5px;line-height:1.72;color:rgba(236,231,225,.9);margin:0 0 18px;">' + esc(d) + '</p>'; }).join('');
+    var highlightsHtml = proj.highlights.map(function (h) {
+      return '<div style="display:flex;gap:12px;align-items:flex-start;"><span style="width:7px;height:7px;border-radius:2px;background:' + proj.color + ';margin-top:8px;flex:none;transform:rotate(45deg);"></span><span style="font-size:15.5px;line-height:1.6;color:rgba(236,231,225,.85);">' + esc(h) + '</span></div>';
+    }).join('');
+    var linksHtml = '';
+    if (proj.links && proj.links.length) {
+      linksHtml = '<div style="display:flex;gap:12px;flex-wrap:wrap;">' + proj.links.map(function (lk) {
+        return '<a href="' + esc(lk.url) + '" target="_blank" rel="noopener" style="padding:10px 20px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:14px;font-weight:700;color:#ece7e1;cursor:pointer;display:inline-block;">' + esc(lk.label) + ' &rarr;</a>';
+      }).join('') + '</div>';
+    }
+    return '<div><div style="height:180px;display:flex;align-items:flex-end;padding:26px 40px;background:linear-gradient(135deg, ' + proj.color + ', rgba(20,18,16,.65));position:relative;overflow:hidden;">'
+      + '<div style="position:absolute;top:-30px;right:24px;font-size:150px;font-weight:700;color:rgba(255,255,255,.14);line-height:1;">' + esc(proj.label) + '</div>'
+      + '<div><div style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:6px;">' + esc(proj.year) + '</div>'
+      + '<div style="font-size:30px;font-weight:700;color:#fff;letter-spacing:-.5px;text-shadow:0 2px 12px rgba(0,0,0,.3);">' + esc(proj.full) + '</div></div></div>'
+      + '<div style="max-width:800px;margin:0 auto;padding:30px 40px 60px;">'
+      + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px;">' + tagsHtml + '</div>'
+      + descHtml
+      + '<div style="height:150px;margin:26px 0;border-radius:12px;border:1px solid rgba(255,255,255,.09);background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px);display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\',monospace;font-size:13px;color:rgba(236,231,225,.4);">project shot</div>'
+      + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin:30px 0 14px;">Highlights</div>'
+      + '<div style="display:flex;flex-direction:column;gap:11px;margin-bottom:32px;">' + highlightsHtml + '</div>'
+      + linksHtml + '</div></div>';
+  }
+
+  function afterRender() {
+    if (state.active === 'terminal') {
+      var body = document.getElementById('term-body');
+      if (body) body.scrollTop = body.scrollHeight;
+      var inp = document.getElementById('term-input');
+      if (inp) { inp.focus(); var v = inp.value; inp.value = ''; inp.value = v; }
+    }
+    if (state.overview) {
+      var s = document.getElementById('search-input');
+      if (s) { s.focus(); var sv = s.value; s.value = ''; s.value = sv; }
+    }
+  }
+
+  // Files-view item click dispatch (avoids re-serializing closures into HTML attrs)
+  function filesOpen(i) {
+    var items = window.__filesItems || [];
+    if (items[i] && items[i].open) items[i].open();
+  }
+
+  // ---------------------------------------------------------------------
+  // Boot + clock + global key handling
+  // ---------------------------------------------------------------------
+  function startBoot() {
+    bootId = setInterval(function () {
+      if (state.boot >= 100) return;
+      var n = Math.min(100, state.boot + 6 + Math.random() * 11);
+      if (n >= 100) { clearInterval(bootId); setTimeout(function () { setState({ booted: true }); }, 700); }
+      setState({ boot: n });
+    }, 130);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (state.ctx.open) { setState({ ctx: { open: false, x: 0, y: 0 } }); return; }
+      if (state.overview) { setState({ overview: false }); return; }
+      if (state.active) { setState({ active: null }); return; }
+    }
+  });
+
+  // ---------------------------------------------------------------------
+  // Public API (referenced by inline event handlers)
+  // ---------------------------------------------------------------------
+  window.App = {
+    open: open, openPost: openPost, blogBack: blogBack,
+    toggleOverview: toggleOverview, closeOverview: closeOverview, closeWindow: closeWindow,
+    setFiles: setFiles, setWall: setWall,
+    onDeskContext: onDeskContext, onDeskClick: onDeskClick,
+    onSearchInput: onSearchInput, onSearchKey: onSearchKey,
+    onTermInput: onTermInput, onTermKey: onTermKey, focusTerm: focusTerm,
+    stop: stop, filesOpen: filesOpen
+  };
+
+  tick();
+  clockId = setInterval(tick, 15000);
+  startBoot();
+  render();
+})();
+</script>
+</body>
+</html>
