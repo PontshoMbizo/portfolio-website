@@ -172,6 +172,23 @@
 
   var CONTACT = { email: 'pontshombizo329@gmail.com', github: 'github.com/PontshoMbizo', linkedin: 'www.linkedin.com/in/pontshombizo' };
 
+  // The arrays above are the fallback/default content, used if content.json
+  // can't be fetched (e.g. opened as a bare file://, or before the admin
+  // backend is set up on the VM). Once deployed, content.json — edited via
+  // /admin — is the real source of truth and overrides these on load.
+  function loadContent() {
+    fetch('content.json', { cache: 'no-store' }).then(function (r) {
+      if (!r.ok) throw new Error('content.json ' + r.status);
+      return r.json();
+    }).then(function (data) {
+      if (Array.isArray(data.projects)) projects = data.projects;
+      if (Array.isArray(data.posts)) posts = data.posts;
+      if (Array.isArray(data.skills)) skills = data.skills;
+      if (data.contact && typeof data.contact === 'object') CONTACT = data.contact;
+      render();
+    }).catch(function () { /* keep built-in defaults */ });
+  }
+
   // ---------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------
@@ -197,8 +214,19 @@
   // ---------------------------------------------------------------------
   // Derived data helpers
   // ---------------------------------------------------------------------
+  // Favicon to show in a project's icon in place of the letter, if it has
+  // one. `icon` on the project data wins if set; otherwise, for projects
+  // with a live link, try that origin's default /favicon.ico. appIcon()
+  // falls back to the letter automatically if the image 404s/fails to load.
+  function projectIcon(p) {
+    if (p.icon) return p.icon;
+    if (p.links && p.links.length && p.links[0].url) {
+      try { return new URL(p.links[0].url).origin + '/favicon.ico'; } catch (e) { return null; }
+    }
+    return null;
+  }
   function allApps() {
-    return core.concat(projects.map(function (p) { return { id: p.id, name: p.name, kind: 'letter', color: p.color, label: p.label }; }));
+    return core.concat(projects.map(function (p) { return { id: p.id, name: p.name, kind: 'letter', color: p.color, label: p.label, icon: projectIcon(p) }; }));
   }
   function filteredApps() {
     var q = state.query.trim().toLowerCase();
@@ -206,7 +234,7 @@
     return q ? all.filter(function (a) { return a.name.toLowerCase().indexOf(q) !== -1; }) : all;
   }
   function filesFor(path) {
-    if (path === 'Projects') return projects.map(function (p) { return { name: p.name, kind: 'letter', color: p.color, label: p.label, open: function () { open(p.id); } }; });
+    if (path === 'Projects') return projects.map(function (p) { return { name: p.name, kind: 'letter', color: p.color, label: p.label, icon: projectIcon(p), open: function () { open(p.id); } }; });
     if (path === 'Blog') return posts.map(function (p, i) { return { name: p.title, kind: 'doc', color: '#8a8378', label: '', open: function () { openPost(i); } }; });
     return [
       { name: 'About Me.txt', kind: 'doc', color: '#8a8378', label: '', open: function () { open('about'); } },
@@ -288,7 +316,7 @@
   // ---------------------------------------------------------------------
   // Icon rendering (mirrors AppIcon.dc.html)
   // ---------------------------------------------------------------------
-  function appIcon(kind, color, label, size) {
+  function appIcon(kind, color, label, size, icon) {
     var glyphSize = Math.round(size * 0.42);
     var svgSize = Math.round(size * 0.56);
     var bg = color || '#3f7bd6';
@@ -306,7 +334,11 @@
     } else {
       inner = '<span style="font-weight:700;font-size:' + glyphSize + 'px;">' + esc(label || '?') + '</span>';
     }
-    return '<div style="width:' + size + 'px;height:' + size + 'px;border-radius:24%;background:' + bg + ';display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.15);color:#fff;font-family:\'Cantarell\',system-ui,sans-serif;overflow:hidden;flex:none;">' + inner + '</div>';
+    // If a favicon URL is available, paint it over the letter/glyph — the
+    // letter stays in the DOM underneath so a 404/load failure just removes
+    // the <img> and reveals it again, no JS round-trip needed.
+    var favHtml = icon ? '<img src="' + esc(icon) + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove()">' : '';
+    return '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;border-radius:24%;background:' + bg + ';display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.15);color:#fff;font-family:\'Cantarell\',system-ui,sans-serif;overflow:hidden;flex:none;">' + inner + favHtml + '</div>';
   }
 
   function esc(s) {
@@ -370,7 +402,7 @@
         + '<div onclick="App.stop(event)" style="margin-top:56px;width:min(760px,86vw);display:flex;flex-wrap:wrap;gap:20px 34px;justify-content:center;">'
         + apps.map(function (a) {
             return '<button onclick="App.open(\'' + a.id + '\')" class="hoverable" style="display:flex;flex-direction:column;align-items:center;gap:11px;width:110px;padding:14px 6px;border:none;border-radius:16px;background:none;cursor:pointer;color:#f4efe9;">'
-              + appIcon(a.kind, a.color, a.label, 72)
+              + appIcon(a.kind, a.color, a.label, 72, a.icon)
               + '<span style="font-size:13.5px;text-align:center;line-height:1.3;">' + esc(a.name) + '</span></button>';
           }).join('')
         + '</div></div>';
@@ -385,7 +417,7 @@
           var anim = st.launched === id ? 'dockbounce .5s ease' : 'none';
           var dot = st.active === id ? '#f4b880' : 'transparent';
           return '<button onclick="App.open(\'' + id + '\')" title="' + esc(a.name) + '" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;animation:' + anim + ';transition:transform .16s ease;">'
-            + appIcon(a.kind, a.color, a.label, 50)
+            + appIcon(a.kind, a.color, a.label, 50, a.icon)
             + '<span style="width:5px;height:5px;border-radius:50%;background:' + dot + ';"></span></button>';
         }).join('')
       + '<div style="width:1px;align-self:stretch;background:rgba(255,255,255,.14);margin:2px 3px;"></div>'
@@ -452,7 +484,7 @@
     var items = filesFor(st.filesPath);
     var itemsHtml = items.map(function (it, i) {
       return '<button onclick="App.filesOpen(' + i + ')" class="hoverable" style="display:flex;flex-direction:column;align-items:center;gap:9px;padding:16px 8px;border:none;border-radius:12px;background:none;cursor:pointer;color:#ece7e1;">'
-        + appIcon(it.kind, it.color, it.label, 54)
+        + appIcon(it.kind, it.color, it.label, 54, it.icon)
         + '<span style="font-size:13px;text-align:center;line-height:1.3;max-width:110px;">' + esc(it.name) + '</span></button>';
     }).join('');
     window.__filesItems = items; // for filesOpen dispatch
@@ -583,6 +615,7 @@
   tick();
   clockId = setInterval(tick, 15000);
   startBoot();
+  loadContent();
   render();
 })();
 </script>

@@ -1,0 +1,115 @@
+{
+  "projects": [
+    {
+      "id": "nikavsim", "name": "nikaVSimulator", "full": "nikaVSimulator — FPGA / Verilog simulator", "year": "2025",
+      "color": "#8a63d2", "label": "V", "tags": ["FPGA", "Verilog", "Hardware Simulation"],
+      "desc": [
+        "An in-browser simulator for the Tang Nano 9K FPGA. Write Verilog in a Monaco editor, run it through a sandboxed Icarus Verilog backend, and watch the board’s pins and waveforms come alive without touching real hardware.",
+        "The simulation backend runs untrusted HDL inside locked-down, network-less containers on a rootless Podman socket — full isolation from the host even if the input is hostile."
+      ],
+      "highlights": [
+        "Live board pin overlay synced to the simulated waveform.",
+        "Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.",
+        "Deployed self-host, embeddable cross-origin by other tools."
+      ],
+      "links": [ { "label": "Launch Simulator", "url": "http://nika.84.8.139.133.nip.io/" } ]
+    },
+    {
+      "id": "stmsim", "name": "STM Simulator", "full": "stmVSimulator — STM32 peripheral simulator", "year": "2025",
+      "color": "#d98a2b", "label": "S", "tags": ["Embedded", "C", "Emulation"],
+      "desc": [
+        "A simulator for the STM32 \"Blue Pill\" that lets bare-metal C firmware be tested without the physical board in hand — faster iteration, and CI that doesn’t need hardware in the loop.",
+        "Compiles and runs firmware through a sandboxed QEMU backend, then renders the resulting GPIO/peripheral trace on a live board view."
+      ],
+      "highlights": [
+        "Models core peripherals closely enough to run real firmware.",
+        "Turns \"flash and pray\" into a tight edit-run loop.",
+        "Useful when hardware is shared or unavailable."
+      ],
+      "links": [ { "label": "Launch Simulator", "url": "http://stm.84.8.139.133.nip.io/" } ]
+    },
+    {
+      "id": "nilm", "name": "SA Grid NILM", "full": "South African Grid NILM Research", "year": "2025 – 26",
+      "color": "#2aa39a", "label": "N", "tags": ["Signal Processing", "Machine Learning", "Energy"],
+      "desc": [
+        "Research into Non-Intrusive Load Monitoring (NILM): disaggregating the power draw of individual household appliances from a single, whole-house smart-meter signal — no per-device sensors required.",
+        "The work is tuned for the South African context, where load-shedding and an unstable grid break many of the assumptions baked into NILM datasets from elsewhere."
+      ],
+      "highlights": [
+        "Built a preprocessing pipeline robust to grid interruptions and missing windows.",
+        "Compared classical event detection against sequence models for disaggregation.",
+        "Framed accuracy around the appliances that matter for demand-side management."
+      ],
+      "links": []
+    },
+    {
+      "id": "cubitedge", "name": "CubitEdge", "full": "CubitEdge — self-hosted DevOps platform", "year": "2025",
+      "color": "#3f7bd6", "label": "C", "tags": ["DevOps", "Self-hosted", "Infrastructure"],
+      "desc": [
+        "A self-hosted DevOps platform that bundles git hosting, CI runners and a container registry into a single, deployable stack — so a small team can own its whole pipeline.",
+        "Born from wanting to understand my toolchain end-to-end instead of stitching together someone else’s black boxes."
+      ],
+      "highlights": [
+        "One-command deploy of git + CI + container registry.",
+        "Container-based runners with build caching.",
+        "Feasibility study weighing Forgejo against building from scratch."
+      ],
+      "links": []
+    },
+    {
+      "id": "eggtheory", "name": "Egg Theory", "full": "Egg Theory — Action RPG", "year": "2024",
+      "color": "#d0452b", "label": "E", "tags": ["Game Dev", "Design", "Gameplay"],
+      "desc": [
+        "An action-RPG side project — a playground for gameplay systems, combat feel and the kind of design problems that have nothing to do with my engineering coursework.",
+        "A reminder that I’m drawn to ideas broadly; the restlessness across domains is part of the point."
+      ],
+      "highlights": [
+        "Designed the core combat loop and enemy behaviours.",
+        "Hand-tuned game feel: hit-stop, knockback, timing windows.",
+        "Built as a deliberate break from hardware work."
+      ],
+      "links": []
+    },
+    {
+      "id": "siggen", "name": "Signal Gen", "full": "Programmable Signal Generator", "year": "2024",
+      "color": "#e8863c", "label": "G", "tags": ["Hardware", "PCB", "DSP"],
+      "desc": [
+        "A programmable signal generator taken from requirements through CAD and firmware — a full-stack hardware project from schematic capture to a working board."
+      ],
+      "highlights": [
+        "Requirements capture, schematic and PCB layout.",
+        "Firmware for waveform synthesis and control.",
+        "End-to-end ownership from spec to bring-up."
+      ],
+      "links": []
+    }
+  ],
+  "posts": [
+    {
+      "title": "Getting the 'why' right before the build", "date": "Jun 2026", "tag": "Essay",
+      "pars": [
+        "It’s tempting to start building the moment a problem is handed to you. The tools are right there, the deadline is real, and typing feels like progress. I’ve learned to resist that pull.",
+        "Before I reach for a tool, I try to understand the fundamentals of what I’m actually solving. Getting the why right — why this approach, why this constraint matters, why the obvious solution fails — saves far more time than moving fast ever does.",
+        "It also means giving myself room to be wrong early, when being wrong is cheap. A wrong assumption caught on paper costs an afternoon. The same assumption caught in silicon costs a semester."
+      ]
+    },
+    {
+      "title": "What NILM taught me about noisy signals", "date": "May 2026", "tag": "Signals",
+      "pars": [
+        "Non-intrusive load monitoring asks a deceptively simple question: given one aggregate power signal for a whole house, can you tell which appliances are running?",
+        "The hard part isn’t the model. It’s that the real signal is a mess — overlapping loads, sensor noise, and a grid that, in South Africa, is anything but steady. Load-shedding turns your clean training distribution into a rumour.",
+        "The lesson that stuck: spend your effort understanding the signal before you tune the model. Most of my accuracy gains came from framing the problem, not from a fancier network."
+      ]
+    },
+    {
+      "title": "Notes on self-hosting my whole toolchain", "date": "Apr 2026", "tag": "Infra",
+      "pars": [
+        "I wanted my git hosting, CI and container registry to live on hardware I control. CubitEdge started as that itch — one deployable stack instead of five SaaS logins.",
+        "Self-hosting teaches you how the tools you take for granted actually fit together. You stop seeing \"CI\" as a magic button and start seeing runners, queues and caches.",
+        "Is it more work? Sometimes. But I understand my pipeline now in a way I never did when it was someone else’s black box."
+      ]
+    }
+  ],
+  "skills": ["Embedded Systems", "Digital Signal Processing", "FPGA / HDL", "C / C++", "Python", "Machine Learning", "PCB Design", "High-Performance Computing", "Control Systems"],
+  "contact": { "email": "pontshombizo329@gmail.com", "github": "github.com/PontshoMbizo", "linkedin": "www.linkedin.com/in/pontshombizo" }
+}
