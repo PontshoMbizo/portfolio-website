@@ -268,12 +268,24 @@
   function focusTerm() { var el = document.getElementById('term-input'); if (el) el.focus(); }
   function stop(e) { e.stopPropagation(); }
 
+  // Deliberately NOT routed through setState()/render(): this fires every 15s
+  // for as long as the page is open, and a full innerHTML rebuild would replay
+  // every CSS entrance animation on the page (most visibly the open window's
+  // `winopen` pop-in) since a fresh DOM node always restarts its animation —
+  // that read as the window "blinking" closed and open again every 15s.
+  // Mutate state directly (so a render triggered for any other reason still
+  // shows the right clock) and patch just the two clock text nodes in place.
   function tick() {
     var d = new Date();
     var h = d.getHours(), m = d.getMinutes();
     var ap = h >= 12 ? 'PM' : 'AM'; h = h % 12; if (h === 0) h = 12;
     var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    setState({ time: h + ':' + String(m).padStart(2, '0') + ' ' + ap, date: months[d.getMonth()] + ' ' + d.getDate() });
+    state.time = h + ':' + String(m).padStart(2, '0') + ' ' + ap;
+    state.date = months[d.getMonth()] + ' ' + d.getDate();
+    var timeEl = document.getElementById('clock-time');
+    var dateEl = document.getElementById('clock-date');
+    if (timeEl) timeEl.textContent = state.time;
+    if (dateEl) dateEl.textContent = state.date;
   }
 
   function runCmd(raw) {
@@ -369,7 +381,7 @@
     // TOP BAR
     html += '<div style="position:absolute;top:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:rgba(20,18,16,.66);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:40;font-size:13px;">'
       + '<button onclick="App.toggleOverview()" class="hoverable" style="background:none;border:none;color:#ece7e1;font:inherit;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:8px;">Activities</button>'
-      + '<div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:12px;font-weight:700;color:#f4efe9;"><span>' + esc(st.date) + '</span><span>' + esc(st.time) + '</span></div>'
+      + '<div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:12px;font-weight:700;color:#f4efe9;"><span id="clock-date">' + esc(st.date) + '</span><span id="clock-time">' + esc(st.time) + '</span></div>'
       + '<div style="display:flex;align-items:center;gap:11px;color:#f4efe9;">'
       + '<svg width="17" height="14" viewBox="0 0 17 14"><rect x="0" y="9" width="3" height="5" rx="1" fill="#f4efe9"></rect><rect x="4.6" y="6" width="3" height="8" rx="1" fill="#f4efe9"></rect><rect x="9.2" y="3" width="3" height="11" rx="1" fill="#f4efe9"></rect><rect x="13.8" y="0" width="3" height="14" rx="1" fill="rgba(244,239,233,.35)"></rect></svg>'
       + '<svg width="16" height="14" viewBox="0 0 16 14"><polygon points="0,5 4,5 8,1 8,13 4,9 0,9" fill="#f4efe9"></polygon><path d="M11 4 A4 4 0 0 1 11 10" stroke="#f4efe9" stroke-width="1.4" fill="none"></path></svg>'
