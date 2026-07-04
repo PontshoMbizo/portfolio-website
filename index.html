@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pontsho Mbizo — pontshoOS</title>
 <meta name="description" content="Pontsho Mbizo — Electrical &amp; Computer Engineer. Portfolio presented as a desktop OS.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%237d2a10'/%3E%3Ccircle cx='50' cy='50' r='28' fill='%23e8863c'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="favico.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   html,body{margin:0;padding:0;height:100%;background:#0b0a09;overflow:hidden;}
   *{box-sizing:border-box;}
-  ::selection{background:rgba(232,134,60,.35);}
+  ::selection{background:rgba(60,184,122,.35);}
   @keyframes winopen{from{opacity:0;transform:translate(-50%,-48%) scale(.965);}to{opacity:1;transform:translate(-50%,-50%) scale(1);}}
   @keyframes dockbounce{0%,100%{transform:translateY(0);}38%{transform:translateY(-15px);}}
   @keyframes ovin{from{opacity:0;transform:scale(1.04);}to{opacity:1;transform:scale(1);}}
@@ -36,15 +36,15 @@
   // Data
   // ---------------------------------------------------------------------
   var walls = [
-    'radial-gradient(120% 95% at 50% 16%, rgba(64,196,186,.34), rgba(64,196,186,0) 34%), linear-gradient(180deg,#4e1a0d 0%,#7d2a10 34%,#b0491a 66%,#d9853c 100%)',
+    'radial-gradient(120% 95% at 50% 16%, rgba(80,220,140,.28), rgba(80,220,140,0) 36%), linear-gradient(180deg,#0a3019 0%,#0f4d2a 34%,#1a7048 66%,#3cba78 100%)',
     'radial-gradient(120% 90% at 68% 20%, rgba(126,146,255,.30), transparent 42%), linear-gradient(180deg,#0c1030 0%,#1a1f4a 55%,#2b2f66 100%)',
     'radial-gradient(110% 85% at 30% 20%, rgba(64,220,160,.30), transparent 46%), linear-gradient(180deg,#0f1c1a 0%,#20443c 55%,#3a5a6e 100%)'
   ];
 
   var core = [
-    { id: 'about', name: 'About Me', kind: 'about', color: '#e8863c', label: 'A' },
+    { id: 'about', name: 'About Me', kind: 'about', color: '#3cb87a', label: 'A' },
     { id: 'files', name: 'Files', kind: 'files', color: '#3f7bd6', label: 'F' },
-    { id: 'blog', name: 'Blog', kind: 'blog', color: '#b8632a', label: 'B' },
+    { id: 'blog', name: 'Blog', kind: 'blog', color: '#2a7a52', label: 'B' },
     { id: 'terminal', name: 'Terminal', kind: 'terminal', color: '#2c2a26', label: '>' }
   ];
 
@@ -129,7 +129,7 @@
     },
     {
       id: 'siggen', name: 'Signal Gen', full: 'Programmable Signal Generator', year: '2024',
-      color: '#e8863c', label: 'G', tags: ['Hardware', 'PCB', 'DSP'],
+      color: '#3cb87a', label: 'G', tags: ['Hardware', 'PCB', 'DSP'],
       desc: [
         'A programmable signal generator taken from requirements through CAD and firmware — a full-stack hardware project from schematic capture to a working board.'
       ],
@@ -442,7 +442,7 @@
       + dockIds.map(function (id) {
           var a = byId[id]; if (!a) return '';
           var anim = st.launched === id ? 'dockbounce .5s ease' : 'none';
-          var dot = st.active === id ? '#f4b880' : 'transparent';
+          var dot = st.active === id ? '#80e4b0' : 'transparent';
           return '<button onclick="App.open(\'' + id + '\')" title="' + esc(a.name) + '" style="background:none;border:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;animation:' + anim + ';transition:transform .16s ease;">'
             + appIcon(a.kind, a.color, a.label, 50, a.icon)
             + '<span style="width:5px;height:5px;border-radius:50%;background:' + dot + ';"></span></button>';
@@ -463,7 +463,7 @@
         + '<div style="height:1px;background:rgba(255,255,255,.1);margin:5px 4px;"></div>'
         + '<div style="padding:6px 12px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(236,231,225,.45);">Background</div>'
         + '<div style="display:flex;gap:8px;padding:0 12px 8px;">'
-        + '<button onclick="App.setWall(0)" title="Desert" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#7d2a10,#d9853c);"></button>'
+        + '<button onclick="App.setWall(0)" title="Forest" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#0f4d2a,#3cba78);"></button>'
         + '<button onclick="App.setWall(1)" title="Night" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#141a44,#2b2f66);"></button>'
         + '<button onclick="App.setWall(2)" title="Aurora" style="width:44px;height:30px;border-radius:7px;border:1px solid rgba(255,255,255,.2);cursor:pointer;background:linear-gradient(180deg,#122a24,#3a5a6e);"></button></div>'
         + '<div style="height:1px;background:rgba(255,255,255,.1);margin:5px 4px;"></div>'
@@ -473,13 +473,13 @@
     // BOOT SCREEN
     var bootOpacity = st.booted ? 0 : 1, bootPointer = st.booted ? 'none' : 'auto';
     html += '<div style="position:absolute;inset:0;z-index:200;background:#0b0a09;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:' + bootOpacity + ';pointer-events:' + bootPointer + ';transition:opacity .7s ease;">'
-      + '<div style="width:88px;height:88px;border-radius:24%;background:linear-gradient(140deg,#e8863c,#c8542a);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(232,134,60,.35);margin-bottom:26px;position:relative;overflow:hidden;">'
+      + '<div style="width:88px;height:88px;border-radius:24%;background:linear-gradient(140deg,#3cb87a,#1e8a56);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 40px rgba(60,184,122,.35);margin-bottom:26px;position:relative;overflow:hidden;">'  
       + '<div style="width:34px;height:34px;border-radius:50%;background:#fff;position:relative;"></div>'
-      + '<div style="position:absolute;top:24px;right:22px;width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#e8863c,#c8542a);"></div></div>'
-      + '<div style="font-size:30px;font-weight:300;letter-spacing:1px;color:#f4efe9;">pontsho<span style="font-weight:700;color:#e8a06a;">OS</span></div>'
+      + '<div style="position:absolute;top:24px;right:22px;width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#3cb87a,#1e8a56);"></div></div>'
+      + '<div style="font-size:30px;font-weight:300;letter-spacing:1px;color:#f4efe9;">pontsho<span style="font-weight:700;color:#5dd49a;">OS</span></div>'
       + '<div style="font-size:13px;color:rgba(236,231,225,.5);margin-top:8px;">Pontsho Mbizo · Portfolio</div>'
       + '<div style="width:220px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);margin-top:40px;overflow:hidden;">'
-      + '<div style="height:100%;width:' + Math.round(st.boot) + '%;background:linear-gradient(90deg,#e8863c,#f4b880);border-radius:3px;transition:width .13s ease;"></div></div></div>';
+      + '<div style="height:100%;width:' + Math.round(st.boot) + '%;background:linear-gradient(90deg,#3cb87a,#80e4b0);border-radius:3px;transition:width .13s ease;"></div></div></div>';
 
     root.innerHTML = html;
     afterRender();
@@ -491,12 +491,12 @@
     }).join('');
     return '<div style="max-width:780px;margin:0 auto;padding:48px 40px 60px;">'
       + '<div style="display:flex;align-items:center;gap:22px;margin-bottom:34px;">'
-      + '<div style="width:88px;height:88px;flex:none;border-radius:22%;background:linear-gradient(140deg,#e8863c,#c8542a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.35);">PM</div>'
+      + '<div style="width:88px;height:88px;flex:none;border-radius:22%;background:linear-gradient(140deg,#3cb87a,#1e8a56);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.35);">PM</div>'
       + '<div><div style="font-size:28px;font-weight:700;letter-spacing:-.5px;">Pontsho Mbizo</div>'
-      + '<div style="font-size:16px;color:#e8a06a;margin-top:3px;">Electrical &amp; Computer Engineer</div>'
+      + '<div style="font-size:16px;color:#5dd49a;margin-top:3px;">Electrical &amp; Computer Engineer</div>'
       + '<div style="font-size:13px;color:rgba(236,231,225,.55);margin-top:6px;">Cape Town, South Africa &nbsp;·&nbsp; University of Cape Town &nbsp;·&nbsp; Final year</div></div></div>'
       + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an Electrical and Computer Engineer in my final year at the University of Cape Town. My work sits at the intersection of hardware and computation — embedded systems, digital signal processing, high-performance computing and hardware design are the areas I keep returning to, in my studies and on my own time.</p>'
-      + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an engineer first. That means I care about things that actually work — not just things that look good on paper or pass a surface-level test. But I’ve learned that building things that work starts well before the build itself. I try to understand the fundamentals before I reach for the tools, and I give myself room to be wrong in that process — getting the <em style="color:#e8a06a;font-style:italic;">why</em> right matters more to me than moving fast.</p>'
+      + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an engineer first. That means I care about things that actually work — not just things that look good on paper or pass a surface-level test. But I’ve learned that building things that work starts well before the build itself. I try to understand the fundamentals before I reach for the tools, and I give myself room to be wrong in that process — getting the <em style="color:#5dd49a;font-style:italic;">why</em> right matters more to me than moving fast.</p>'
       + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 32px;">My curiosity doesn’t switch off when the problem is solved. I’m drawn to ideas broadly — across disciplines, industries and scales — and that restlessness is part of what makes me a better engineer. I’ve worked in defence and mining, built processors in a hardware description language, trained machine-learning models, designed control systems and written project-management tooling. The common thread isn’t the domain; it’s the drive to understand and to build.</p>'
       + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin-bottom:14px;">Areas I work in</div>'
       + '<div style="display:flex;flex-wrap:wrap;gap:9px;">' + skillsHtml + '</div></div>';
@@ -505,8 +505,8 @@
   function renderFiles(st) {
     var folders = [{ key: 'Projects', name: 'Projects' }, { key: 'Documents', name: 'Documents' }, { key: 'Blog', name: 'Blog' }];
     var foldersHtml = folders.map(function (f) {
-      var bg = st.filesPath === f.key ? 'rgba(232,134,60,.20)' : 'transparent';
-      return '<button onclick="App.setFiles(\'' + f.key + '\')" class="hoverable" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:9px 11px;margin-bottom:2px;border:none;border-radius:9px;background:' + bg + ';color:#ece7e1;font:inherit;font-size:14px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:2px;background:#e8863c;flex:none;"></span>' + esc(f.name) + '</button>';
+      var bg = st.filesPath === f.key ? 'rgba(60,184,122,.20)' : 'transparent';
+      return '<button onclick="App.setFiles(\'' + f.key + '\')" class="hoverable" style="width:100%;text-align:left;display:flex;align-items:center;gap:10px;padding:9px 11px;margin-bottom:2px;border:none;border-radius:9px;background:' + bg + ';color:#ece7e1;font:inherit;font-size:14px;cursor:pointer;"><span style="width:8px;height:8px;border-radius:2px;background:#3cb87a;flex:none;"></span>' + esc(f.name) + '</button>';
     }).join('');
     var items = filesFor(st.filesPath);
     var itemsHtml = items.map(function (it, i) {
@@ -533,7 +533,7 @@
     if (st.blogPost == null) {
       var itemsHtml = posts.map(function (p, i) {
         return '<button onclick="App.openPost(' + i + ')" class="hoverable" style="display:block;width:100%;text-align:left;padding:22px 22px;margin-bottom:14px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.03);cursor:pointer;color:#ece7e1;">'
-          + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:9px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#e8863c;background:rgba(232,134,60,.14);padding:3px 9px;border-radius:6px;">' + esc(p.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(p.date) + '</span></div>'
+          + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:9px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#3cb87a;background:rgba(60,184,122,.14);padding:3px 9px;border-radius:6px;">' + esc(p.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(p.date) + '</span></div>'
           + '<div style="font-size:18px;font-weight:700;margin-bottom:6px;">' + esc(p.title) + '</div>'
           + '<div style="font-size:14.5px;line-height:1.6;color:rgba(236,231,225,.7);">' + esc(p.pars[0]) + '</div></button>';
       }).join('');
@@ -544,8 +544,8 @@
     var post = posts[st.blogPost];
     var parsHtml = post.pars.map(function (par) { return '<p style="font-size:16.5px;line-height:1.75;color:rgba(236,231,225,.88);margin:0 0 20px;">' + esc(par) + '</p>'; }).join('');
     return '<div style="max-width:700px;margin:0 auto;padding:34px 40px 64px;">'
-      + '<button onclick="App.blogBack()" style="background:none;border:none;color:#e8a06a;font:inherit;font-size:14px;cursor:pointer;padding:6px 0;margin-bottom:22px;">&larr; All posts</button>'
-      + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#e8863c;background:rgba(232,134,60,.14);padding:3px 9px;border-radius:6px;">' + esc(post.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(post.date) + '</span></div>'
+      + '<button onclick="App.blogBack()" style="background:none;border:none;color:#5dd49a;font:inherit;font-size:14px;cursor:pointer;padding:6px 0;margin-bottom:22px;">&larr; All posts</button>'
+      + '<div style="display:flex;gap:10px;align-items:center;margin-bottom:14px;"><span style="font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#3cb87a;background:rgba(60,184,122,.14);padding:3px 9px;border-radius:6px;">' + esc(post.tag) + '</span><span style="font-size:13px;color:rgba(236,231,225,.45);">' + esc(post.date) + '</span></div>'
       + '<h1 style="font-size:30px;font-weight:700;letter-spacing:-.6px;line-height:1.2;margin:0 0 26px;">' + esc(post.title) + '</h1>' + parsHtml + '</div>';
   }
 
@@ -555,11 +555,11 @@
       return '<div style="margin-top:4px;"><span style="color:#8ec07c;">pontsho@pontshoOS</span><span style="color:rgba(216,210,198,.6);">:~$</span> <span style="color:#f4efe9;">' + esc(e.cmd) + '</span></div>' + linesHtml;
     }).join('');
     return '<div onclick="App.focusTerm()" id="term-body" style="height:100%;overflow:auto;background:#141210;padding:18px 20px;font-family:\'JetBrains Mono\',ui-monospace,monospace;font-size:14px;line-height:1.65;color:#d8d2c6;cursor:text;">'
-      + '<div style="color:#e8a06a;">Welcome to pontshoOS terminal — v1.0</div>'
+      + '<div style="color:#5dd49a;">Welcome to pontshoOS terminal — v1.0</div>'
       + '<div style="color:rgba(216,210,198,.6);margin-bottom:14px;">Type <span style="color:#8ec07c;">help</span> to get started.</div>'
       + logHtml
       + '<div style="display:flex;align-items:center;margin-top:4px;"><span style="color:#8ec07c;">pontsho@pontshoOS</span><span style="color:rgba(216,210,198,.6);">:~$</span>&nbsp;'
-      + '<input id="term-input" value="' + esc(st.termInput) + '" oninput="App.onTermInput(event)" onkeydown="App.onTermKey(event)" spellcheck="false" autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#f4efe9;font-family:inherit;font-size:14px;padding:0;caret-color:#e8863c;"></div></div>';
+      + '<input id="term-input" value="' + esc(st.termInput) + '" oninput="App.onTermInput(event)" onkeydown="App.onTermKey(event)" spellcheck="false" autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#f4efe9;font-family:inherit;font-size:14px;padding:0;caret-color:#3cb87a;"></div></div>';
   }
 
   function renderProject(proj) {
