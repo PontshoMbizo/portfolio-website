@@ -48,11 +48,12 @@
     { id: 'terminal', name: 'Terminal', kind: 'terminal', color: '#2c2a26', label: '>' }
   ];
 
-  // Live app launch links (nip.io for now — swap to the real subdomains once
-  // pontsho-mbizo.com's DNS is live; nginx already accepts both host names).
+  // Live app launch links. Only used as a fallback if content.json fails to
+  // fetch (see below) — the real, edited-via-/admin/ copy of these lives in
+  // content.json, not here.
   var LIVE = {
-    nika: 'http://nika.84.8.139.133.nip.io/',
-    stm: 'http://stm.84.8.139.133.nip.io/'
+    nika: 'https://nika.pontsho-mbizo.co.za/',
+    stm: 'https://stm.pontsho-mbizo.co.za/'
   };
 
   var projects = [

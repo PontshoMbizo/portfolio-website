@@ -5,8 +5,8 @@ desktop OS. Single self-contained `index.html` (vanilla HTML/CSS/JS, no build
 step, no dependencies) rebuilt from a [Claude Design](https://claude.ai/design)
 handoff.
 
-Live at `pontsho-mbizo.com` (currently `84.8.139.133.nip.io` until the domain's
-DNS is live) — self-hosted on the same Oracle VM as
+Live at [pontsho-mbizo.co.za](https://pontsho-mbizo.co.za) — self-hosted on
+the same Oracle VM as
 [nikaVSimulator](https://github.com/PontshoMbizo/nikaVSimulator) and
 [stmVSimulator](https://github.com/PontshoMbizo/stmVSimulator), which this
 portfolio links out to (see the nikaVSimulator / STM Simulator project entries).

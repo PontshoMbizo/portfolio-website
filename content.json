@@ -12,7 +12,7 @@
         "Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.",
         "Deployed self-host, embeddable cross-origin by other tools."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "http://nika.84.8.139.133.nip.io/" } ]
+      "links": [ { "label": "Launch Simulator", "url": "https://nika.pontsho-mbizo.co.za/" } ]
     },
     {
       "id": "stmsim", "name": "STM Simulator", "full": "stmVSimulator — STM32 peripheral simulator", "year": "2025",
@@ -26,7 +26,7 @@
         "Turns \"flash and pray\" into a tight edit-run loop.",
         "Useful when hardware is shared or unavailable."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "http://stm.84.8.139.133.nip.io/" } ]
+      "links": [ { "label": "Launch Simulator", "url": "https://stm.pontsho-mbizo.co.za/" } ]
     },
     {
       "id": "nilm", "name": "SA Grid NILM", "full": "South African Grid NILM Research", "year": "2025 – 26",
