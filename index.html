@@ -329,7 +329,9 @@
   // ---------------------------------------------------------------------
   // Icon rendering (mirrors AppIcon.dc.html)
   // ---------------------------------------------------------------------
+  var brokenIcons = {}; // urls that already 404'd this session -- don't retry them
   function appIcon(kind, color, label, size, icon) {
+    if (icon && brokenIcons[icon]) icon = null; // skip a known-dead fetch entirely
     var glyphSize = Math.round(size * 0.42);
     var svgSize = Math.round(size * 0.56);
     var bg = color || '#3f7bd6';
@@ -350,7 +352,7 @@
     // If a favicon URL is available, paint it over the letter/glyph — the
     // letter stays in the DOM underneath so a 404/load failure just removes
     // the <img> and reveals it again, no JS round-trip needed.
-    var favHtml = icon ? '<img src="' + esc(icon) + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.remove()">' : '';
+    var favHtml = icon ? '<img src="' + esc(icon) + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="App.iconFailed(\'' + esc(icon).replace(/'/g, "\\'") + '\');this.remove()">' : '';
     return '<div style="position:relative;width:' + size + 'px;height:' + size + 'px;border-radius:24%;background:' + bg + ';display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.15);color:#fff;font-family:\'Cantarell\',system-ui,sans-serif;overflow:hidden;flex:none;">' + inner + favHtml + '</div>';
   }
 
@@ -363,6 +365,7 @@
   // ---------------------------------------------------------------------
   var UID = 0;
   function nextId(prefix) { return prefix + (++UID); }
+  var lastRenderedActive = null; // see isFreshOpen in render() below
 
   function render() {
     var st = state;
@@ -371,6 +374,17 @@
     var proj = projects.filter(function (p) { return p.id === active; })[0] || { full: '', name: '', year: '', color: '#333', label: '', tags: [], desc: [], highlights: [], links: [] };
     var titleMap = { about: 'About Me', files: 'Files', blog: (st.blogPost != null ? posts[st.blogPost].title : 'Blog'), terminal: 'Terminal' };
     var windowTitle = isProjectActive ? proj.full : (titleMap[active] || '');
+
+    // Only play the window's pop-in animation when it's actually transitioning
+    // open (or switching to a different window) -- not on every re-render while
+    // the same window just sits there open. root.innerHTML is a full rebuild on
+    // every render, so without this guard ANY re-render for ANY reason (a stray
+    // event, a future bug, browser-specific timing) recreates the window <div>
+    // from scratch and the CSS animation restarts, reading as the window
+    // quickly closing and reopening. This makes that class of bug impossible
+    // regardless of what's triggering the extra render.
+    var isFreshOpen = active && active !== lastRenderedActive;
+    lastRenderedActive = active;
 
     var html = '';
 
@@ -390,7 +404,7 @@
 
     // WINDOW
     if (active) {
-      html += '<div style="position:absolute;top:calc(50% + 8px);left:50%;transform:translate(-50%,-50%);width:min(1080px,90vw);height:80vh;background:#221f19;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;display:flex;flex-direction:column;z-index:35;animation:winopen .3s cubic-bezier(.2,.85,.25,1);">'
+      html += '<div style="position:absolute;top:calc(50% + 8px);left:50%;transform:translate(-50%,-50%);width:min(1080px,90vw);height:80vh;background:#221f19;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,.6);overflow:hidden;display:flex;flex-direction:column;z-index:35;' + (isFreshOpen ? 'animation:winopen .3s cubic-bezier(.2,.85,.25,1);' : '') + '">'
         + '<div style="height:46px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 16px;background:#2b2620;border-bottom:1px solid rgba(255,255,255,.07);">'
         + '<span style="font-weight:700;font-size:14px;color:#f4efe9;">' + esc(windowTitle) + '</span>'
         + '<button onclick="App.closeWindow()" title="Close" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:#ece7e1;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>'
@@ -622,7 +636,8 @@
     onDeskContext: onDeskContext, onDeskClick: onDeskClick,
     onSearchInput: onSearchInput, onSearchKey: onSearchKey,
     onTermInput: onTermInput, onTermKey: onTermKey, focusTerm: focusTerm,
-    stop: stop, filesOpen: filesOpen
+    stop: stop, filesOpen: filesOpen,
+    iconFailed: function (url) { brokenIcons[url] = true; }
   };
 
   tick();
