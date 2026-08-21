@@ -42,6 +42,3 @@ jobs:
 
       - name: Validate content.json
         run: node -e "JSON.parse(require('fs').readFileSync('content.json', 'utf8')); console.log('content.json OK')"
-
-      - name: Syntax-check admin backend
-        run: python3 -m py_compile admin/server.py

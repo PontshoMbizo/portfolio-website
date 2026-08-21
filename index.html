@@ -50,8 +50,7 @@
   ];
 
   // Live app launch links. Only used as a fallback if content.json fails to
-  // fetch (see below) — the real, edited-via-/admin/ copy of these lives in
-  // content.json, not here.
+  // fetch (see below) — the real copy of these lives in content.json, not here.
   var LIVE = {
     nika: 'https://nika.pontsho-mbizo.co.za/',
     stm: 'https://stm.pontsho-mbizo.co.za/'
@@ -179,10 +178,9 @@
   ];
 
   // Work-experience timeline (Experience app). Kept separate from `projects`
-  // (rather than as a content.json field) so it can't be silently dropped by
-  // the admin panel's save payload, which only ever sends {projects, posts,
-  // skills, contact}. `artefacts` references project ids above — every id
-  // listed there should exist in `projects`.
+  // rather than as a content.json field, since it's edited by hand in this
+  // file, not through content.json. `artefacts` references project ids
+  // above — every id listed there should exist in `projects`.
   var experience = [
     {
       company: 'Tharisa Minerals', role: 'Project Engineering Intern', period: 'Dec 2025 – Jan 2026',
@@ -234,9 +232,8 @@
   var CONTACT = { email: 'pontshombizo329@gmail.com', github: 'github.com/PontshoMbizo', linkedin: 'www.linkedin.com/in/pontshombizo' };
 
   // The arrays above are the fallback/default content, used if content.json
-  // can't be fetched (e.g. opened as a bare file://, or before the admin
-  // backend is set up on the VM). Once deployed, content.json — edited via
-  // /admin — is the real source of truth and overrides these on load.
+  // can't be fetched (e.g. opened as a bare file://). Once deployed,
+  // content.json is the real source of truth and overrides these on load.
   function loadContent() {
     fetch('content.json', { cache: 'no-store' }).then(function (r) {
       if (!r.ok) throw new Error('content.json ' + r.status);
@@ -706,7 +703,7 @@
   // Project diagrams — one hand-drawn technical diagram per project,
   // showing the actual mechanism behind each highlight rather than a
   // decorative icon. Keyed by project id; projects without an entry here
-  // (e.g. a new one added later via /admin) fall back to a plain box.
+  // (e.g. a new one added directly to content.json) fall back to a plain box.
   // ---------------------------------------------------------------------
   function ah(x, y, dir) {
     var s = 6;

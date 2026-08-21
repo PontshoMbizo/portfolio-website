@@ -1,0 +1,44 @@
+name: CI
+
+# Static single-file site — no build step. The only thing worth validating
+# automatically is that the embedded <script> block still parses (a broken
+# regex/paren in the data objects is the realistic failure mode here).
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Extract + syntax-check embedded JS
+        run: |
+          node -e "
+            const fs = require('fs');
+            const html = fs.readFileSync('index.html', 'utf8');
+            const start = html.indexOf('<script>') + '<script>'.length;
+            const end = html.indexOf('</script>', start);
+            if (start < 0 || end < 0) { console.error('Could not locate <script> block'); process.exit(1); }
+            fs.writeFileSync('/tmp/embedded.js', html.slice(start, end));
+          "
+          node --check /tmp/embedded.js
+
+      - name: Basic HTML sanity check
+        run: |
+          grep -q '<!DOCTYPE html>' index.html
+          grep -q '<html' index.html
+          grep -q '</html>' index.html
+
+      - name: Validate content.json
+        run: node -e "JSON.parse(require('fs').readFileSync('content.json', 'utf8')); console.log('content.json OK')"
