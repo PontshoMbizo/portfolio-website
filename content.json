@@ -12,7 +12,7 @@
         "Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.",
         "Deployed self-host, embeddable cross-origin by other tools."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "https://nika.pontsho-mbizo.co.za/" } ]
+      "links": [ { "label": "Launch Simulator", "url": "https://nika.pontsho-mbizo.co.za/" }, { "label": "View source", "url": "https://github.com/PontshoMbizo/nikaVSimulator" } ]
     },
     {
       "id": "stmsim", "name": "STM Simulator", "full": "stmVSimulator — STM32 peripheral simulator", "year": "2025",
@@ -26,60 +26,95 @@
         "Turns \"flash and pray\" into a tight edit-run loop.",
         "Useful when hardware is shared or unavailable."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "https://stm.pontsho-mbizo.co.za/" } ]
+      "links": [ { "label": "Launch Simulator", "url": "https://stm.pontsho-mbizo.co.za/" }, { "label": "View source", "url": "https://github.com/PontshoMbizo/stmVSimulator" } ]
     },
     {
-      "id": "nilm", "name": "SA Grid NILM", "full": "South African Grid NILM Research", "year": "2025 – 26",
-      "color": "#2aa39a", "label": "N", "tags": ["Signal Processing", "Machine Learning", "Energy"],
+      "id": "mcc-sizing-tool", "name": "MCC Sizing Tool", "full": "Three-Phase MCC Sizing Tool — Tharisa Minerals", "year": "Dec 2025 – Jan 2026",
+      "color": "#d9a441", "label": "MCC", "tags": ["Power Systems", "MS Excel", "Industrial Engineering"],
       "desc": [
-        "Research into Non-Intrusive Load Monitoring (NILM): disaggregating the power draw of individual household appliances from a single, whole-house smart-meter signal — no per-device sensors required.",
-        "The work is tuned for the South African context, where load-shedding and an unstable grid break many of the assumptions baked into NILM datasets from elsewhere."
+        "In industrial electrical distribution, a miscalculated cable size or an under-rated busbar isn't just an inefficiency — it can mean a flashover, or an electrician who doesn't go home that evening. That stakes-level thinking shaped this tool.",
+        "I built a parameterised three-phase motor control centre (MCC) sizing tool in Excel that takes a transformer, a set of motor loads, their starting methods and feeder lengths, and returns full-load and feeder currents (including largest-motor inrush), voltage drop across feeder cables and busbars, the equivalent power factor of the combined load, and weekly energy consumption and operating cost per motor.",
+        "Every output is computed two ways — analytically from first principles, and from manufacturer tables (SANS 1507 cables, Austral Wright copper busbars, WEG W22 IE3 motor data) — with the percentage deviation between the two built in as an automatic sanity check."
       ],
       "highlights": [
-        "Built a preprocessing pipeline robust to grid interruptions and missing windows.",
-        "Compared classical event detection against sequence models for disaggregation.",
-        "Framed accuracy around the appliances that matter for demand-side management."
+        "Adopted by the Tharisa site engineering team as the baseline tool for all feeder studies.",
+        "Methodology report formally accepted by the engineering department.",
+        "Presented cost-comparison results directly to the project engineering team.",
+        "Built-in analytical-vs-manufacturer-data deviation check catches specification errors before procurement."
       ],
       "links": []
     },
     {
-      "id": "cubitedge", "name": "CubitEdge", "full": "CubitEdge — self-hosted DevOps platform", "year": "2025",
-      "color": "#3f7bd6", "label": "C", "tags": ["DevOps", "Self-hosted", "Infrastructure"],
+      "id": "sram-capture", "name": "SRAM Data Capture", "full": "SRAM Data Capture (MAX10 FPGA) — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
+      "color": "#c1622f", "label": "FPGA", "tags": ["FPGA", "Verilog", "Defence", "Digital Design"],
       "desc": [
-        "A self-hosted DevOps platform that bundles git hosting, CI runners and a container registry into a single, deployable stack — so a small team can own its whole pipeline.",
-        "Born from wanting to understand my toolchain end-to-end instead of stitching together someone else’s black boxes."
+        "A control system aboard a submarine uses an ASIC connected to a non-volatile SRAM chip (M48T35) to load critical boot and configuration data. The SRAM depends on an internal battery to retain its contents — if that battery fails, the data is lost permanently and the system becomes non-functional. I was tasked with extracting the data without interfering with the system's normal operation.",
+        "The hard constraint was timing: the SRAM only makes valid data available for a 10ns window, roughly 70ns after the Chip Enable and Output Enable lines are asserted — confirmed on an oscilloscope. I designed a custom high-speed capture system on a MAX10 FPGA (DE10-Lite) to hit that window: a PLL generating a 200MHz clock from the 50MHz input, a 4-bit counter incrementing every 5ns to delay sampling to exactly 70ns, logic that watches the enable lines and fires the capture at the right cycle, and registers latching the 8-bit data and 15-bit address.",
+        "To interface safely with the 5V SRAM bus without loading it, I also designed a hardware buffer stage using 8-bit bus buffers as level shifters, protecting both systems and preserving signal integrity."
       ],
       "highlights": [
-        "One-command deploy of git + CI + container registry.",
-        "Container-based runners with build caching.",
-        "Feasibility study weighing Forgejo against building from scratch."
+        "Hit a 10ns valid-data window with 70ns timing precision, verified on an oscilloscope.",
+        "Designed and implemented the capture logic in Verilog on an Intel MAX10 FPGA.",
+        "Built a hardware level-shifting interface to safely bridge 5V and FPGA logic levels.",
+        "Non-destructively preserved mission-critical configuration data on legacy submarine hardware."
       ],
       "links": []
     },
     {
-      "id": "eggtheory", "name": "Egg Theory", "full": "Egg Theory — Action RPG", "year": "2024",
-      "color": "#d0452b", "label": "E", "tags": ["Game Dev", "Design", "Gameplay"],
+      "id": "udp-motion-sim", "name": "UDP Motion Sim Comms", "full": "UDP Communication for a Motion Simulator — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
+      "color": "#b8863f", "label": "UDP", "tags": ["C", "Networking", "Real-Time Systems"],
       "desc": [
-        "An action-RPG side project — a playground for gameplay systems, combat feel and the kind of design problems that have nothing to do with my engineering coursework.",
-        "A reminder that I’m drawn to ideas broadly; the restlessness across domains is part of the point."
+        "Cybicom's motion simulator needed a reliable channel to exchange control and status messages with its instructor station. I built a bidirectional, multi-threaded UDP communication system in C using POSIX threads on Windows.",
+        "A client thread sends MessageToMotionSystem packets via sendto() with a custom checksum for data integrity; a server thread listens with recvfrom() and validates incoming data against that same checksum; a main thread launches both and passes socket and message data through custom struct arguments.",
+        "The result is a full-duplex, thread-safe UDP system, robust and extensible enough to be handed off for simulator integration, with documentation to match."
       ],
       "highlights": [
-        "Designed the core combat loop and enemy behaviours.",
-        "Hand-tuned game feel: hit-stop, knockback, timing windows.",
-        "Built as a deliberate break from hardware work."
+        "Full-duplex, thread-safe UDP client/server architecture in C with POSIX threads.",
+        "Custom checksum validation on both send and receive paths for data integrity.",
+        "Delivered with handover documentation for integration by the simulator team."
       ],
       "links": []
     },
     {
-      "id": "siggen", "name": "Signal Gen", "full": "Programmable Signal Generator", "year": "2024",
-      "color": "#e8863c", "label": "G", "tags": ["Hardware", "PCB", "DSP"],
+      "id": "sim-mount", "name": "Simulator Mounting Rig", "full": "Custom Mounting Solution for a Simulation Computer — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
+      "color": "#8c6a3f", "label": "CAD", "tags": ["Mechanical Design", "Fusion 360", "3D Printing"],
       "desc": [
-        "A programmable signal generator taken from requirements through CAD and firmware — a full-stack hardware project from schematic capture to a working board."
+        "A 4U 19-inch COTS simulation computer needed to be securely mounted inside the instructor station of a motion simulator — but the rack-mounted unit was prone to sliding under the inertial forces the simulator itself produced, and still needed to come out easily for maintenance.",
+        "I 3D-printed custom measurement jigs (designed in Fusion 360, sliced in Cura) to accurately map the mounting dimensions, then developed a parametric hinge-and-hook system that secures the unit while keeping it serviceable. M6 bolts handle the shear and tensile loads, sized for the expected forces.",
+        "The mounting was verified through visual inspection and mechanical testing: zero visible stress on the unit, and full access via a single bolt release and hook rotation."
       ],
       "highlights": [
-        "Requirements capture, schematic and PCB layout.",
-        "Firmware for waveform synthesis and control.",
-        "End-to-end ownership from spec to bring-up."
+        "Designed and 3D-printed custom measurement tooling to capture accurate mounting dimensions.",
+        "Developed a parametric hinge-and-hook mount balancing security against inertial loads with easy serviceability.",
+        "Verified under mechanical testing with zero visible stress and single-action release."
+      ],
+      "links": []
+    },
+    {
+      "id": "network-vacation-work", "name": "Plant Network Restoration", "full": "Network Infrastructure & Restoration — Tharisa Minerals", "year": "Dec 2024 – Jan 2025",
+      "color": "#7a8f4a", "label": "NET", "tags": ["Networking", "Infrastructure", "Cloud"],
+      "desc": [
+        "As a Network Engineer/Artisan vacation student, I worked on restoring and expanding Tharisa's network infrastructure across the plant — bringing critical systems back online, connecting new office spaces, and investigating Microsoft Cloud PC as a potential long-term remote-work solution.",
+        "The work was hands-on and infrastructure-first: fibre optic cable installation and configuration, switch-device connectivity, and troubleshooting LAN connections between devices and a central server across multiple sites."
+      ],
+      "highlights": [
+        "Restored LAN connectivity between devices and a server across multiple plant sites.",
+        "Investigated Microsoft Cloud PC as a cost-reduction strategy for remote operations.",
+        "Expanded network access by connecting new office spaces into the existing infrastructure."
+      ],
+      "links": []
+    },
+    {
+      "id": "electrical-instrumentation-vacation", "name": "Electrical & Instrumentation Vacation Work", "full": "Electrical and Instrumentation Technician — Tharisa Minerals", "year": "Dec 2023 – Jan 2024",
+      "color": "#9c7a4a", "label": "E&I", "tags": ["Electrical Maintenance", "Instrumentation"],
+      "desc": [
+        "My first placement at Tharisa: shadowing and assisting Electrical Artisans and Instrumentation Technicians in their daily, routine work — inspecting and maintaining plant electrical equipment and control systems.",
+        "It was a ground-level introduction to industrial electrical maintenance, and the first time I saw, up close, why the fundamentals I was starting to learn at university actually mattered on a real plant floor."
+      ],
+      "highlights": [
+        "Shadowed and assisted qualified Electrical Artisans and Instrumentation Technicians.",
+        "Gained first-hand exposure to routine inspection and maintenance of industrial electrical equipment.",
+        "First industry placement — the starting point for four consecutive years of vacation work in the field."
       ],
       "links": []
     }
@@ -94,22 +129,14 @@
       ]
     },
     {
-      "title": "What NILM taught me about noisy signals", "date": "May 2026", "tag": "Signals",
+      "title": "What four vacation placements taught me before I could call myself an engineer", "date": "Jan 2026", "tag": "Reflection",
       "pars": [
-        "Non-intrusive load monitoring asks a deceptively simple question: given one aggregate power signal for a whole house, can you tell which appliances are running?",
-        "The hard part isn’t the model. It’s that the real signal is a mess — overlapping loads, sensor noise, and a grid that, in South Africa, is anything but steady. Load-shedding turns your clean training distribution into a rumour.",
-        "The lesson that stuck: spend your effort understanding the signal before you tune the model. Most of my accuracy gains came from framing the problem, not from a fancier network."
-      ]
-    },
-    {
-      "title": "Notes on self-hosting my whole toolchain", "date": "Apr 2026", "tag": "Infra",
-      "pars": [
-        "I wanted my git hosting, CI and container registry to live on hardware I control. CubitEdge started as that itch — one deployable stack instead of five SaaS logins.",
-        "Self-hosting teaches you how the tools you take for granted actually fit together. You stop seeing \"CI\" as a magic button and start seeing runners, queues and caches.",
-        "Is it more work? Sometimes. But I understand my pipeline now in a way I never did when it was someone else’s black box."
+        "My first placement at Tharisa had me shadowing electrical artisans, watching them inspect and maintain equipment I barely understood on paper. My most recent placement had me presenting a costing tool I'd built to the project engineering team. Four vacations apart, and the distance between those two versions of me is the whole point of doing this while still studying.",
+        "Each placement changed what I paid attention to. Network restoration taught me that infrastructure work is mostly about finding the one broken link in a system that looks fine from the top. The MCC sizing tool taught me that engineers don't trust a single number — they compute it twice, from different assumptions, and interrogate the gap between the two answers.",
+        "None of this replaces coursework. But it's the part of engineering that doesn't show up in a syllabus: what it feels like when a methodology report you wrote gets accepted by people who've been doing this for twenty years, and have every reason to say no."
       ]
     }
   ],
-  "skills": ["Embedded Systems", "Digital Signal Processing", "FPGA / HDL", "C / C++", "Python", "Machine Learning", "PCB Design", "High-Performance Computing", "Control Systems"],
+  "skills": ["Embedded Systems", "Digital Signal Processing", "FPGA / HDL", "C / C++", "Python", "Machine Learning", "PCB Design", "High-Performance Computing", "Control Systems", "Power Systems", "Mechanical Design (CAD)"],
   "contact": { "email": "pontshombizo329@gmail.com", "github": "github.com/PontshoMbizo", "linkedin": "www.linkedin.com/in/pontshombizo" }
 }

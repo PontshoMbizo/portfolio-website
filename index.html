@@ -43,6 +43,7 @@
 
   var core = [
     { id: 'about', name: 'About Me', kind: 'about', color: '#3cb87a', label: 'A' },
+    { id: 'experience', name: 'Experience', kind: 'experience', color: '#c9a227', label: 'X' },
     { id: 'files', name: 'Files', kind: 'files', color: '#3f7bd6', label: 'F' },
     { id: 'blog', name: 'Blog', kind: 'blog', color: '#2a7a52', label: 'B' },
     { id: 'terminal', name: 'Terminal', kind: 'terminal', color: '#2c2a26', label: '>' }
@@ -69,7 +70,7 @@
         'Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.',
         'Deployed self-host, embeddable cross-origin by other tools.'
       ],
-      links: [ { label: 'Launch Simulator', url: LIVE.nika } ]
+      links: [ { label: 'Launch Simulator', url: LIVE.nika }, { label: 'View source', url: 'https://github.com/PontshoMbizo/nikaVSimulator' } ]
     },
     {
       id: 'stmsim', name: 'STM Simulator', full: 'stmVSimulator — STM32 peripheral simulator', year: '2025',
@@ -83,62 +84,129 @@
         'Turns "flash and pray" into a tight edit-run loop.',
         'Useful when hardware is shared or unavailable.'
       ],
-      links: [ { label: 'Launch Simulator', url: LIVE.stm } ]
+      links: [ { label: 'Launch Simulator', url: LIVE.stm }, { label: 'View source', url: 'https://github.com/PontshoMbizo/stmVSimulator' } ]
     },
     {
-      id: 'nilm', name: 'SA Grid NILM', full: 'South African Grid NILM Research', year: '2025 – 26',
-      color: '#2aa39a', label: 'N', tags: ['Signal Processing', 'Machine Learning', 'Energy'],
+      id: 'mcc-sizing-tool', name: 'MCC Sizing Tool', full: 'Three-Phase MCC Sizing Tool — Tharisa Minerals', year: 'Dec 2025 – Jan 2026',
+      color: '#d9a441', label: 'MCC', tags: ['Power Systems', 'MS Excel', 'Industrial Engineering'],
       desc: [
-        'Research into Non-Intrusive Load Monitoring (NILM): disaggregating the power draw of individual household appliances from a single, whole-house smart-meter signal — no per-device sensors required.',
-        'The work is tuned for the South African context, where load-shedding and an unstable grid break many of the assumptions baked into NILM datasets from elsewhere.'
+        'In industrial electrical distribution, a miscalculated cable size or an under-rated busbar isn\'t just an inefficiency — it can mean a flashover, or an electrician who doesn\'t go home that evening. That stakes-level thinking shaped this tool.',
+        'I built a parameterised three-phase motor control centre (MCC) sizing tool in Excel that takes a transformer, a set of motor loads, their starting methods and feeder lengths, and returns full-load and feeder currents (including largest-motor inrush), voltage drop across feeder cables and busbars, the equivalent power factor of the combined load, and weekly energy consumption and operating cost per motor.',
+        'Every output is computed two ways — analytically from first principles, and from manufacturer tables (SANS 1507 cables, Austral Wright copper busbars, WEG W22 IE3 motor data) — with the percentage deviation between the two built in as an automatic sanity check.'
       ],
       highlights: [
-        'Built a preprocessing pipeline robust to grid interruptions and missing windows.',
-        'Compared classical event detection against sequence models for disaggregation.',
-        'Framed accuracy around the appliances that matter for demand-side management.'
+        'Adopted by the Tharisa site engineering team as the baseline tool for all feeder studies.',
+        'Methodology report formally accepted by the engineering department.',
+        'Presented cost-comparison results directly to the project engineering team.',
+        'Built-in analytical-vs-manufacturer-data deviation check catches specification errors before procurement.'
       ],
       links: []
     },
     {
-      id: 'cubitedge', name: 'CubitEdge', full: 'CubitEdge — self-hosted DevOps platform', year: '2025',
-      color: '#3f7bd6', label: 'C', tags: ['DevOps', 'Self-hosted', 'Infrastructure'],
+      id: 'sram-capture', name: 'SRAM Data Capture', full: 'SRAM Data Capture (MAX10 FPGA) — Cybicom Atlas Defence', year: 'Jun – Jul 2025',
+      color: '#c1622f', label: 'FPGA', tags: ['FPGA', 'Verilog', 'Defence', 'Digital Design'],
       desc: [
-        'A self-hosted DevOps platform that bundles git hosting, CI runners and a container registry into a single, deployable stack — so a small team can own its whole pipeline.',
-        'Born from wanting to understand my toolchain end-to-end instead of stitching together someone else’s black boxes.'
+        'A control system aboard a submarine uses an ASIC connected to a non-volatile SRAM chip (M48T35) to load critical boot and configuration data. The SRAM depends on an internal battery to retain its contents — if that battery fails, the data is lost permanently and the system becomes non-functional. I was tasked with extracting the data without interfering with the system\'s normal operation.',
+        'The hard constraint was timing: the SRAM only makes valid data available for a 10ns window, roughly 70ns after the Chip Enable and Output Enable lines are asserted — confirmed on an oscilloscope. I designed a custom high-speed capture system on a MAX10 FPGA (DE10-Lite) to hit that window: a PLL generating a 200MHz clock from the 50MHz input, a 4-bit counter incrementing every 5ns to delay sampling to exactly 70ns, logic that watches the enable lines and fires the capture at the right cycle, and registers latching the 8-bit data and 15-bit address.',
+        'To interface safely with the 5V SRAM bus without loading it, I also designed a hardware buffer stage using 8-bit bus buffers as level shifters, protecting both systems and preserving signal integrity.'
       ],
       highlights: [
-        'One-command deploy of git + CI + container registry.',
-        'Container-based runners with build caching.',
-        'Feasibility study weighing Forgejo against building from scratch.'
+        'Hit a 10ns valid-data window with 70ns timing precision, verified on an oscilloscope.',
+        'Designed and implemented the capture logic in Verilog on an Intel MAX10 FPGA.',
+        'Built a hardware level-shifting interface to safely bridge 5V and FPGA logic levels.',
+        'Non-destructively preserved mission-critical configuration data on legacy submarine hardware.'
       ],
       links: []
     },
     {
-      id: 'eggtheory', name: 'Egg Theory', full: 'Egg Theory — Action RPG', year: '2024',
-      color: '#d0452b', label: 'E', tags: ['Game Dev', 'Design', 'Gameplay'],
+      id: 'udp-motion-sim', name: 'UDP Motion Sim Comms', full: 'UDP Communication for a Motion Simulator — Cybicom Atlas Defence', year: 'Jun – Jul 2025',
+      color: '#b8863f', label: 'UDP', tags: ['C', 'Networking', 'Real-Time Systems'],
       desc: [
-        'An action-RPG side project — a playground for gameplay systems, combat feel and the kind of design problems that have nothing to do with my engineering coursework.',
-        'A reminder that I’m drawn to ideas broadly; the restlessness across domains is part of the point.'
+        'Cybicom\'s motion simulator needed a reliable channel to exchange control and status messages with its instructor station. I built a bidirectional, multi-threaded UDP communication system in C using POSIX threads on Windows.',
+        'A client thread sends MessageToMotionSystem packets via sendto() with a custom checksum for data integrity; a server thread listens with recvfrom() and validates incoming data against that same checksum; a main thread launches both and passes socket and message data through custom struct arguments.',
+        'The result is a full-duplex, thread-safe UDP system, robust and extensible enough to be handed off for simulator integration, with documentation to match.'
       ],
       highlights: [
-        'Designed the core combat loop and enemy behaviours.',
-        'Hand-tuned game feel: hit-stop, knockback, timing windows.',
-        'Built as a deliberate break from hardware work.'
+        'Full-duplex, thread-safe UDP client/server architecture in C with POSIX threads.',
+        'Custom checksum validation on both send and receive paths for data integrity.',
+        'Delivered with handover documentation for integration by the simulator team.'
       ],
       links: []
     },
     {
-      id: 'siggen', name: 'Signal Gen', full: 'Programmable Signal Generator', year: '2024',
-      color: '#3cb87a', label: 'G', tags: ['Hardware', 'PCB', 'DSP'],
+      id: 'sim-mount', name: 'Simulator Mounting Rig', full: 'Custom Mounting Solution for a Simulation Computer — Cybicom Atlas Defence', year: 'Jun – Jul 2025',
+      color: '#8c6a3f', label: 'CAD', tags: ['Mechanical Design', 'Fusion 360', '3D Printing'],
       desc: [
-        'A programmable signal generator taken from requirements through CAD and firmware — a full-stack hardware project from schematic capture to a working board.'
+        'A 4U 19-inch COTS simulation computer needed to be securely mounted inside the instructor station of a motion simulator — but the rack-mounted unit was prone to sliding under the inertial forces the simulator itself produced, and still needed to come out easily for maintenance.',
+        'I 3D-printed custom measurement jigs (designed in Fusion 360, sliced in Cura) to accurately map the mounting dimensions, then developed a parametric hinge-and-hook system that secures the unit while keeping it serviceable. M6 bolts handle the shear and tensile loads, sized for the expected forces.',
+        'The mounting was verified through visual inspection and mechanical testing: zero visible stress on the unit, and full access via a single bolt release and hook rotation.'
       ],
       highlights: [
-        'Requirements capture, schematic and PCB layout.',
-        'Firmware for waveform synthesis and control.',
-        'End-to-end ownership from spec to bring-up.'
+        'Designed and 3D-printed custom measurement tooling to capture accurate mounting dimensions.',
+        'Developed a parametric hinge-and-hook mount balancing security against inertial loads with easy serviceability.',
+        'Verified under mechanical testing with zero visible stress and single-action release.'
       ],
       links: []
+    },
+    {
+      id: 'network-vacation-work', name: 'Plant Network Restoration', full: 'Network Infrastructure & Restoration — Tharisa Minerals', year: 'Dec 2024 – Jan 2025',
+      color: '#7a8f4a', label: 'NET', tags: ['Networking', 'Infrastructure', 'Cloud'],
+      desc: [
+        'As a Network Engineer/Artisan vacation student, I worked on restoring and expanding Tharisa\'s network infrastructure across the plant — bringing critical systems back online, connecting new office spaces, and investigating Microsoft Cloud PC as a potential long-term remote-work solution.',
+        'The work was hands-on and infrastructure-first: fibre optic cable installation and configuration, switch-device connectivity, and troubleshooting LAN connections between devices and a central server across multiple sites.'
+      ],
+      highlights: [
+        'Restored LAN connectivity between devices and a server across multiple plant sites.',
+        'Investigated Microsoft Cloud PC as a cost-reduction strategy for remote operations.',
+        'Expanded network access by connecting new office spaces into the existing infrastructure.'
+      ],
+      links: []
+    },
+    {
+      id: 'electrical-instrumentation-vacation', name: 'Electrical & Instrumentation Vacation Work', full: 'Electrical and Instrumentation Technician — Tharisa Minerals', year: 'Dec 2023 – Jan 2024',
+      color: '#9c7a4a', label: 'E&I', tags: ['Electrical Maintenance', 'Instrumentation'],
+      desc: [
+        'My first placement at Tharisa: shadowing and assisting Electrical Artisans and Instrumentation Technicians in their daily, routine work — inspecting and maintaining plant electrical equipment and control systems.',
+        'It was a ground-level introduction to industrial electrical maintenance, and the first time I saw, up close, why the fundamentals I was starting to learn at university actually mattered on a real plant floor.'
+      ],
+      highlights: [
+        'Shadowed and assisted qualified Electrical Artisans and Instrumentation Technicians.',
+        'Gained first-hand exposure to routine inspection and maintenance of industrial electrical equipment.',
+        'First industry placement — the starting point for four consecutive years of vacation work in the field.'
+      ],
+      links: []
+    }
+  ];
+
+  // Work-experience timeline (Experience app). Kept separate from `projects`
+  // (rather than as a content.json field) so it can't be silently dropped by
+  // the admin panel's save payload, which only ever sends {projects, posts,
+  // skills, contact}. `artefacts` references project ids above — every id
+  // listed there should exist in `projects`.
+  var experience = [
+    {
+      company: 'Tharisa Minerals', role: 'Project Engineering Intern', period: 'Dec 2025 – Jan 2026',
+      location: 'Rustenburg, North West',
+      summary: 'Assigned to the project engineering team, gaining exposure to project management on industrial mining infrastructure — scope, management of change, costing, procurement and engineering sign-off.',
+      artefacts: ['mcc-sizing-tool']
+    },
+    {
+      company: 'Cybicom Atlas Defence', role: 'Engineering Intern', period: 'Jun – Jul 2025',
+      location: 'Simon\'s Town, Western Cape',
+      summary: 'Multidisciplinary engineering across embedded hardware and firmware, software development and testing, mechanical design and 3D printing, and systems integration — including an Acceptance Test Procedure for a full motion simulation system.',
+      artefacts: ['sram-capture', 'udp-motion-sim', 'sim-mount']
+    },
+    {
+      company: 'Tharisa Minerals', role: 'Network Engineer/Artisan (Vacation Work)', period: 'Dec 2024 – Jan 2025',
+      location: 'Rustenburg, North West',
+      summary: 'Worked on network infrastructure, system restoration and cloud computing across multiple plant sites.',
+      artefacts: ['network-vacation-work']
+    },
+    {
+      company: 'Tharisa Minerals', role: 'Electrical and Instrumentation Technician (Vacation Work)', period: 'Dec 2023 – Jan 2024',
+      location: 'Rustenburg, North West',
+      summary: 'Assisted Electrical Artisans and Instrumentation Technicians with inspection and maintenance of plant electrical equipment and control systems — my first hands-on exposure to industrial electrical work.',
+      artefacts: []
     }
   ];
 
@@ -152,24 +220,16 @@
       ]
     },
     {
-      title: 'What NILM taught me about noisy signals', date: 'May 2026', tag: 'Signals',
+      title: 'What four vacation placements taught me before I could call myself an engineer', date: 'Jan 2026', tag: 'Reflection',
       pars: [
-        'Non-intrusive load monitoring asks a deceptively simple question: given one aggregate power signal for a whole house, can you tell which appliances are running?',
-        'The hard part isn’t the model. It’s that the real signal is a mess — overlapping loads, sensor noise, and a grid that, in South Africa, is anything but steady. Load-shedding turns your clean training distribution into a rumour.',
-        'The lesson that stuck: spend your effort understanding the signal before you tune the model. Most of my accuracy gains came from framing the problem, not from a fancier network.'
-      ]
-    },
-    {
-      title: 'Notes on self-hosting my whole toolchain', date: 'Apr 2026', tag: 'Infra',
-      pars: [
-        'I wanted my git hosting, CI and container registry to live on hardware I control. CubitEdge started as that itch — one deployable stack instead of five SaaS logins.',
-        'Self-hosting teaches you how the tools you take for granted actually fit together. You stop seeing "CI" as a magic button and start seeing runners, queues and caches.',
-        'Is it more work? Sometimes. But I understand my pipeline now in a way I never did when it was someone else’s black box.'
+        'My first placement at Tharisa had me shadowing electrical artisans, watching them inspect and maintain equipment I barely understood on paper. My most recent placement had me presenting a costing tool I\'d built to the project engineering team. Four vacations apart, and the distance between those two versions of me is the whole point of doing this while still studying.',
+        'Each placement changed what I paid attention to. Network restoration taught me that infrastructure work is mostly about finding the one broken link in a system that looks fine from the top. The MCC sizing tool taught me that engineers don\'t trust a single number — they compute it twice, from different assumptions, and interrogate the gap between the two answers.',
+        'None of this replaces coursework. But it\'s the part of engineering that doesn\'t show up in a syllabus: what it feels like when a methodology report you wrote gets accepted by people who\'ve been doing this for twenty years, and have every reason to say no.'
       ]
     }
   ];
 
-  var skills = ['Embedded Systems', 'Digital Signal Processing', 'FPGA / HDL', 'C / C++', 'Python', 'Machine Learning', 'PCB Design', 'High-Performance Computing', 'Control Systems'];
+  var skills = ['Embedded Systems', 'Digital Signal Processing', 'FPGA / HDL', 'C / C++', 'Python', 'Machine Learning', 'PCB Design', 'High-Performance Computing', 'Control Systems', 'Power Systems', 'Mechanical Design (CAD)'];
 
   var CONTACT = { email: 'pontshombizo329@gmail.com', github: 'github.com/PontshoMbizo', linkedin: 'www.linkedin.com/in/pontshombizo' };
 
@@ -199,7 +259,8 @@
     blogPost: null, filesPath: 'Projects',
     ctx: { open: false, x: 0, y: 0 }, wallpaper: 0,
     time: '', date: '',
-    termInput: '', termLog: [], launched: null
+    termInput: '', termLog: [], launched: null,
+    help: false, hint: false
   };
 
   var root = document.getElementById('root');
@@ -239,9 +300,8 @@
     if (path === 'Blog') return posts.map(function (p, i) { return { name: p.title, kind: 'doc', color: '#8a8378', label: '', open: function () { openPost(i); } }; });
     return [
       { name: 'About Me.txt', kind: 'doc', color: '#8a8378', label: '', open: function () { open('about'); } },
-      { name: 'CV — Pontsho Mbizo.pdf', kind: 'doc', color: '#8a8378', label: '', open: function () { open('about'); } },
-      { name: 'NILM Research.md', kind: 'doc', color: '#8a8378', label: '', open: function () { open('nilm'); } },
-      { name: 'references.bib', kind: 'doc', color: '#8a8378', label: '', open: function () { open('nilm'); } }
+      { name: 'Experience — CV Summary.txt', kind: 'doc', color: '#8a8378', label: '', open: function () { open('experience'); } },
+      { name: 'CV — Pontsho Mbizo.pdf', kind: 'doc', color: '#8a8378', label: '', open: function () { window.open('cv.pdf', '_blank', 'noopener'); } }
     ];
   }
 
@@ -249,9 +309,11 @@
   // Actions
   // ---------------------------------------------------------------------
   function open(id) {
-    setState({ active: id, overview: false, ctx: { open: false, x: 0, y: 0 }, launched: id });
+    setState({ active: id, overview: false, ctx: { open: false, x: 0, y: 0 }, launched: id, hint: false });
     setTimeout(function () { if (state.launched === id) setState({ launched: null }); }, 560);
   }
+  function toggleHelp() { setState({ help: !state.help, hint: false, ctx: { open: false, x: 0, y: 0 } }); }
+  function closeHelp() { setState({ help: false }); }
   function openPost(i) { setState({ active: 'blog', blogPost: i, overview: false, ctx: { open: false, x: 0, y: 0 } }); }
   function blogBack() { setState({ blogPost: null }); }
   function toggleOverview() { setState({ overview: !state.overview, query: '', ctx: { open: false, x: 0, y: 0 } }); }
@@ -296,19 +358,20 @@
     var lines = []; var openId = null;
     if (c === '') { lines = []; }
     else if (c === 'help') {
-      lines = ['pontshoOS — available commands', '', '  help              this help', '  ls                list apps', '  about             open About Me', '  projects          list projects', '  open <id>         open an app / project', '  blog              open the blog', '  contact           how to reach me', '  neofetch          system info', '  clear             clear the screen'];
+      lines = ['pontshoOS — available commands', '', '  help              this help', '  ls                list apps', '  about             open About Me', '  experience        open work experience / CV', '  projects          list projects', '  open <id>         open an app / project', '  blog              open the blog', '  contact           how to reach me', '  neofetch          system info', '  clear             clear the screen'];
     } else if (c === 'ls') {
-      lines = ['about   blog   files   terminal', 'projects   contact'];
+      lines = ['about   experience   blog   files   terminal', 'projects   contact'];
     } else if (c === 'whoami') {
       lines = ['Pontsho Mbizo — Electrical & Computer Engineer, UCT'];
     } else if (c === 'about') { openId = 'about'; lines = ['Opening About Me…']; }
+    else if (c === 'experience') { openId = 'experience'; lines = ['Opening Experience…']; }
     else if (c === 'blog') { openId = 'blog'; lines = ['Opening Blog…']; }
     else if (c === 'files') { openId = 'files'; lines = ['Opening Files…']; }
     else if (c === 'projects') {
       lines = ['Projects — open with: open <id>', ''].concat(projects.map(function (p) { return '  ' + p.id.padEnd(12) + p.full; }));
     } else if (c === 'open') {
       var t = (arg || '').toLowerCase();
-      var ids = ['about', 'blog', 'files', 'terminal'].concat(projects.map(function (p) { return p.id; }));
+      var ids = ['about', 'experience', 'blog', 'files', 'terminal'].concat(projects.map(function (p) { return p.id; }));
       if (ids.indexOf(t) !== -1) { openId = t; lines = ['Opening ' + t + '…']; }
       else { lines = ["open: no such app: '" + (arg || '') + "'   (try: projects)"]; }
     } else if (c === 'contact') {
@@ -344,6 +407,8 @@
       inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="2.6" rx="1.3" fill="#fff"></rect><rect x="4" y="11" width="16" height="2.6" rx="1.3" fill="#fff"></rect><rect x="4" y="16" width="10" height="2.6" rx="1.3" fill="#fff"></rect></svg>';
     } else if (kind === 'about') {
       inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="#fff"></circle><rect x="4.5" y="14" width="15" height="9" rx="4.5" fill="#fff"></rect></svg>';
+    } else if (kind === 'experience') {
+      inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="12" rx="2" fill="#fff"></rect><path d="M8.5 8V6.2C8.5 5 9.4 4 10.6 4h2.8C14.6 4 15.5 5 15.5 6.2V8" fill="none" stroke="#fff" stroke-width="1.7"></path><rect x="3.5" y="12.5" width="17" height="2.6" fill="rgba(0,0,0,.16)"></rect></svg>';
     } else if (kind === 'doc') {
       inner = '<svg width="' + svgSize + '" height="' + svgSize + '" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="#fff"></rect><polygon points="14,3 19,8 14,8" fill="rgba(0,0,0,.16)"></polygon><rect x="8" y="11" width="8" height="1.4" rx=".7" fill="' + bg + '"></rect><rect x="8" y="14" width="8" height="1.4" rx=".7" fill="' + bg + '"></rect><rect x="8" y="17" width="5" height="1.4" rx=".7" fill="' + bg + '"></rect></svg>';
     } else {
@@ -372,7 +437,7 @@
     var active = st.active;
     var isProjectActive = projects.some(function (p) { return p.id === active; });
     var proj = projects.filter(function (p) { return p.id === active; })[0] || { full: '', name: '', year: '', color: '#333', label: '', tags: [], desc: [], highlights: [], links: [] };
-    var titleMap = { about: 'About Me', files: 'Files', blog: (st.blogPost != null ? posts[st.blogPost].title : 'Blog'), terminal: 'Terminal' };
+    var titleMap = { about: 'About Me', experience: 'Experience', files: 'Files', blog: (st.blogPost != null ? posts[st.blogPost].title : 'Blog'), terminal: 'Terminal' };
     var windowTitle = isProjectActive ? proj.full : (titleMap[active] || '');
 
     // Only play the window's pop-in animation when it's actually transitioning
@@ -397,6 +462,7 @@
       + '<button onclick="App.toggleOverview()" class="hoverable" style="background:none;border:none;color:#ece7e1;font:inherit;font-weight:700;cursor:pointer;padding:4px 12px;border-radius:8px;">Activities</button>'
       + '<div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:12px;font-weight:700;color:#f4efe9;"><span id="clock-date">' + esc(st.date) + '</span><span id="clock-time">' + esc(st.time) + '</span></div>'
       + '<div style="display:flex;align-items:center;gap:11px;color:#f4efe9;">'
+      + '<button onclick="App.toggleHelp()" title="How to navigate this site" class="hoverable" style="width:20px;height:20px;border-radius:50%;border:1px solid rgba(244,239,233,.4);background:none;color:#f4efe9;font-size:11.5px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;">?</button>'
       + '<svg width="17" height="14" viewBox="0 0 17 14"><rect x="0" y="9" width="3" height="5" rx="1" fill="#f4efe9"></rect><rect x="4.6" y="6" width="3" height="8" rx="1" fill="#f4efe9"></rect><rect x="9.2" y="3" width="3" height="11" rx="1" fill="#f4efe9"></rect><rect x="13.8" y="0" width="3" height="14" rx="1" fill="rgba(244,239,233,.35)"></rect></svg>'
       + '<svg width="16" height="14" viewBox="0 0 16 14"><polygon points="0,5 4,5 8,1 8,13 4,9 0,9" fill="#f4efe9"></polygon><path d="M11 4 A4 4 0 0 1 11 10" stroke="#f4efe9" stroke-width="1.4" fill="none"></path></svg>'
       + '<svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.6" y="0.6" width="21" height="11.8" rx="3" fill="none" stroke="#f4efe9" stroke-width="1.2"></rect><rect x="22.5" y="4" width="2.4" height="5" rx="1" fill="#f4efe9"></rect><rect x="2.2" y="2.2" width="17.8" height="8.6" rx="1.6" fill="#f4efe9"></rect></svg>'
@@ -411,6 +477,7 @@
         + '</div><div style="flex:1;overflow-y:auto;overflow-x:hidden;">';
 
       if (active === 'about') html += renderAbout();
+      else if (active === 'experience') html += renderExperience();
       else if (active === 'files') html += renderFiles(st);
       else if (active === 'blog') html += renderBlog(st);
       else if (active === 'terminal') html += renderTerminal(st);
@@ -435,8 +502,16 @@
         + '</div></div>';
     }
 
+    // ONBOARDING HINT — shown once, right after boot, until dismissed or the
+    // visitor opens anything (see open()/toggleHelp()).
+    if (st.hint) {
+      html += '<div style="position:absolute;bottom:88px;left:50%;transform:translateX(-50%);z-index:42;display:flex;align-items:center;gap:10px;padding:11px 10px 11px 16px;background:rgba(38,34,28,.94);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:999px;box-shadow:0 14px 34px rgba(0,0,0,.4);animation:ctxin .18s ease;font-size:13px;color:#ece7e1;max-width:min(480px,86vw);">'
+        + '<span>New here? Click an icon on the dock below, or the <strong style="color:#5dd49a;">?</strong> up top for a quick guide.</span>'
+        + '<button onclick="App.dismissHint()" title="Dismiss" style="flex:none;width:22px;height:22px;border-radius:50%;border:none;background:rgba(255,255,255,.1);color:#ece7e1;font-size:13px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button></div>';
+    }
+
     // DOCK
-    var dockIds = ['about', 'files', 'blog', 'terminal', 'nikavsim', 'stmsim', 'nilm'];
+    var dockIds = ['about', 'experience', 'files', 'blog', 'terminal', 'nikavsim', 'stmsim', 'sram-capture'];
     var byId = {}; allApps().forEach(function (a) { byId[a.id] = a; });
     html += '<div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:10px;padding:9px 13px;background:rgba(20,18,16,.64);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.09);border-radius:22px;z-index:41;box-shadow:0 14px 44px rgba(0,0,0,.45);">'
       + dockIds.map(function (id) {
@@ -470,6 +545,25 @@
         + '<button onclick="App.open(\'about\')" class="hoverable" style="width:100%;text-align:left;padding:9px 12px;border:none;border-radius:8px;background:none;color:#ece7e1;font:inherit;cursor:pointer;">About pontshoOS</button></div>';
     }
 
+    // HELP OVERLAY
+    if (st.help) {
+      var helpRows = [
+        ['Open something', 'Click any icon in the dock, or press Activities (top-left) to see and search every app.'],
+        ['Go back', 'Press Esc — closes the frontmost thing first: this panel, then Activities, then the open window.'],
+        ['Browse like a filesystem', 'Files works like a real file browser — Projects, Documents and Blog are folders you can click into.'],
+        ['Prefer typing', 'Open Terminal and type help for a full list of commands, including projects and contact.'],
+        ['See everything at once', 'Activities search finds apps and projects by name as you type.']
+      ];
+      html += '<div onclick="App.closeHelp()" style="position:absolute;inset:0;z-index:65;background:rgba(15,13,11,.78);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:center;animation:ovin .18s ease;">'
+        + '<div onclick="App.stop(event)" style="width:min(520px,88vw);max-height:80vh;overflow:auto;background:#221f19;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,.6);padding:26px 26px 22px;">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;"><span style="font-size:17px;font-weight:700;color:#f4efe9;">Finding your way around</span>'
+        + '<button onclick="App.closeHelp()" title="Close" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(255,255,255,.08);color:#ece7e1;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button></div>'
+        + helpRows.map(function (r) {
+            return '<div style="display:flex;gap:14px;padding:11px 0;border-top:1px solid rgba(255,255,255,.07);"><div style="flex:none;width:150px;font-size:13px;font-weight:700;color:#5dd49a;">' + esc(r[0]) + '</div><div style="font-size:14px;line-height:1.55;color:rgba(236,231,225,.82);">' + esc(r[1]) + '</div></div>';
+          }).join('')
+        + '</div></div>';
+    }
+
     // BOOT SCREEN
     var bootOpacity = st.booted ? 0 : 1, bootPointer = st.booted ? 'none' : 'auto';
     html += '<div style="position:absolute;inset:0;z-index:200;background:#0b0a09;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:' + bootOpacity + ';pointer-events:' + bootPointer + ';transition:opacity .7s ease;">'
@@ -489,6 +583,22 @@
     var skillsHtml = skills.map(function (s) {
       return '<span style="padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-size:13.5px;color:#ece7e1;">' + esc(s) + '</span>';
     }).join('');
+    var awards = [
+      { title: 'Dell Young Leader', sub: 'Selected as part of the Dell Young Leaders programme.' },
+      { title: 'UCT Plus Silver Award', sub: '45 hours of role-modelling leadership through residence mentoring.' },
+      { title: 'Electrical Engineering peer mentor', sub: 'Mentoring fellow EEE students at the University of Cape Town.' }
+    ];
+    var awardsHtml = awards.map(function (a) {
+      return '<div style="display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-top:1px solid rgba(255,255,255,.07);">'
+        + '<svg width="18" height="18" viewBox="0 0 24 24" style="flex:none;margin-top:2px;"><path d="M12 2l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 15.9l-5.6 3.2 1.4-6.3-4.8-4.3 6.4-.6z" fill="#c9a227"></path></svg>'
+        + '<div><div style="font-size:14.5px;font-weight:700;color:#f4efe9;">' + esc(a.title) + '</div><div style="font-size:13.5px;color:rgba(236,231,225,.65);margin-top:2px;">' + esc(a.sub) + '</div></div></div>';
+    }).join('');
+    var langs = 'English (fluent) · Setswana (native) · isiZulu (basic) · isiXhosa (basic)';
+    var contactBtns = '<div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;">'
+      + '<a href="mailto:' + esc(CONTACT.email) + '" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:14px;font-weight:700;color:#ece7e1;">Email</a>'
+      + '<a href="https://' + esc(CONTACT.github.replace(/^https?:\/\//, '')) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:14px;font-weight:700;color:#ece7e1;">GitHub</a>'
+      + '<a href="https://' + esc(CONTACT.linkedin.replace(/^https?:\/\//, '')) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-size:14px;font-weight:700;color:#ece7e1;">LinkedIn</a>'
+      + '<a href="cv.pdf" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:10px;background:#3cb87a;border:1px solid #3cb87a;font-size:14px;font-weight:700;color:#0b0a09;">Download CV ↓</a></div>';
     return '<div style="max-width:780px;margin:0 auto;padding:48px 40px 60px;">'
       + '<div style="display:flex;align-items:center;gap:22px;margin-bottom:34px;">'
       + '<div style="width:88px;height:88px;flex:none;border-radius:22%;background:linear-gradient(140deg,#3cb87a,#1e8a56);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:30px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.35);">PM</div>'
@@ -499,7 +609,37 @@
       + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 18px;">I’m an engineer first. That means I care about things that actually work — not just things that look good on paper or pass a surface-level test. But I’ve learned that building things that work starts well before the build itself. I try to understand the fundamentals before I reach for the tools, and I give myself room to be wrong in that process — getting the <em style="color:#5dd49a;font-style:italic;">why</em> right matters more to me than moving fast.</p>'
       + '<p style="font-size:16px;line-height:1.7;color:rgba(236,231,225,.9);margin:0 0 32px;">My curiosity doesn’t switch off when the problem is solved. I’m drawn to ideas broadly — across disciplines, industries and scales — and that restlessness is part of what makes me a better engineer. I’ve worked in defence and mining, built processors in a hardware description language, trained machine-learning models, designed control systems and written project-management tooling. The common thread isn’t the domain; it’s the drive to understand and to build.</p>'
       + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin-bottom:14px;">Areas I work in</div>'
-      + '<div style="display:flex;flex-wrap:wrap;gap:9px;">' + skillsHtml + '</div></div>';
+      + '<div style="display:flex;flex-wrap:wrap;gap:9px;margin-bottom:36px;">' + skillsHtml + '</div>'
+      + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin-bottom:6px;">Awards &amp; activities</div>'
+      + awardsHtml
+      + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin:30px 0 8px;">Languages</div>'
+      + '<div style="font-size:14.5px;color:rgba(236,231,225,.8);margin-bottom:8px;">' + esc(langs) + '</div>'
+      + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin:30px 0 4px;">Get in touch</div>'
+      + contactBtns
+      + '</div>';
+  }
+
+  function renderExperience() {
+    var rows = experience.map(function (e) {
+      var chipsHtml = (e.artefacts || []).map(function (pid) {
+        var p = projects.filter(function (pp) { return pp.id === pid; })[0];
+        if (!p) return '';
+        return '<button onclick="App.open(\'' + pid + '\')" class="hoverable" style="display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid ' + p.color + ';color:#ece7e1;font:inherit;font-size:13px;cursor:pointer;">'
+          + '<span style="width:7px;height:7px;border-radius:50%;background:' + p.color + ';"></span>' + esc(p.name) + ' &rarr;</button>';
+      }).join('');
+      return '<div style="position:relative;padding:0 0 34px 26px;border-left:2px solid rgba(255,255,255,.09);">'
+        + '<span style="position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;background:#c9a227;border:3px solid #221f19;"></span>'
+        + '<div style="font-size:17px;font-weight:700;color:#f4efe9;margin-bottom:4px;">' + esc(e.role) + '</div>'
+        + '<div style="font-size:14px;color:#c9a227;font-weight:700;margin-bottom:3px;">' + esc(e.company) + '</div>'
+        + '<div style="font-size:12.5px;color:rgba(236,231,225,.5);margin-bottom:12px;">' + esc(e.period) + ' &nbsp;&middot;&nbsp; ' + esc(e.location) + '</div>'
+        + '<p style="font-size:15px;line-height:1.65;color:rgba(236,231,225,.85);margin:0 0 14px;">' + esc(e.summary) + '</p>'
+        + (chipsHtml ? '<div style="display:flex;flex-wrap:wrap;gap:9px;">' + chipsHtml + '</div>' : '')
+        + '</div>';
+    }).join('');
+    return '<div style="max-width:760px;margin:0 auto;padding:46px 40px 60px;">'
+      + '<div style="font-size:26px;font-weight:700;letter-spacing:-.5px;margin-bottom:6px;">Experience</div>'
+      + '<div style="font-size:14px;color:rgba(236,231,225,.55);margin-bottom:34px;">Four vacation placements across mining and defence — each one linked to what I actually built while I was there.</div>'
+      + rows + '</div>';
   }
 
   function renderFiles(st) {
@@ -562,6 +702,183 @@
       + '<input id="term-input" value="' + esc(st.termInput) + '" oninput="App.onTermInput(event)" onkeydown="App.onTermKey(event)" spellcheck="false" autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#f4efe9;font-family:inherit;font-size:14px;padding:0;caret-color:#3cb87a;"></div></div>';
   }
 
+  // ---------------------------------------------------------------------
+  // Project diagrams — one hand-drawn technical diagram per project,
+  // showing the actual mechanism behind each highlight rather than a
+  // decorative icon. Keyed by project id; projects without an entry here
+  // (e.g. a new one added later via /admin) fall back to a plain box.
+  // ---------------------------------------------------------------------
+  function ah(x, y, dir) {
+    var s = 6;
+    if (dir === 'r') return '<polygon points="' + x + ',' + y + ' ' + (x - s) + ',' + (y - s * 0.7) + ' ' + (x - s) + ',' + (y + s * 0.7) + '"></polygon>';
+    if (dir === 'l') return '<polygon points="' + x + ',' + y + ' ' + (x + s) + ',' + (y - s * 0.7) + ' ' + (x + s) + ',' + (y + s * 0.7) + '"></polygon>';
+    if (dir === 'd') return '<polygon points="' + x + ',' + y + ' ' + (x - s * 0.7) + ',' + (y - s) + ' ' + (x + s * 0.7) + ',' + (y - s) + '"></polygon>';
+    if (dir === 'u') return '<polygon points="' + x + ',' + y + ' ' + (x - s * 0.7) + ',' + (y + s) + ' ' + (x + s * 0.7) + ',' + (y + s) + '"></polygon>';
+    return '';
+  }
+
+  function diagramFor(id, color) {
+    var F = '"JetBrains Mono", monospace';
+    if (id === 'nikavsim') {
+      return { w: 640, h: 160,
+        aria: 'Diagram: the browser sends Verilog to a sandboxed, network-less container running Icarus Verilog, which returns a waveform to a live board view.',
+        caption: 'Untrusted Verilog runs inside an ephemeral, network-less container — full isolation even if the input is hostile.',
+        svg: '<rect x="20" y="55" width="140" height="50" rx="8" fill="none" stroke-width="1.5"></rect>'
+          + '<text x="90" y="76" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700">Browser</text>'
+          + '<text x="90" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">write Verilog</text>'
+          + '<line x1="160" y1="80" x2="222" y2="80" stroke-width="1.5"></line>' + ah(222, 80, 'r')
+          + '<text x="191" y="70" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">run</text>'
+          + '<rect x="230" y="35" width="180" height="90" rx="10" fill="' + color + '" fill-opacity="0.12" stroke="' + color + '" stroke-width="1.8"></rect>'
+          + '<text x="320" y="58" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700" fill="' + color + '">sandboxed container</text>'
+          + '<text x="320" y="76" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">rootless Podman &middot; Icarus Verilog</text>'
+          + '<text x="320" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">no network &middot; dropped caps</text>'
+          + '<text x="320" y="108" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">ephemeral — destroyed after run</text>'
+          + '<circle cx="392" cy="50" r="8" fill="none" stroke="' + color + '" stroke-width="1.5"></circle><line x1="386" y1="44" x2="398" y2="56" stroke="' + color + '" stroke-width="1.5"></line>'
+          + '<line x1="410" y1="80" x2="472" y2="80" stroke-width="1.5"></line>' + ah(472, 80, 'r')
+          + '<text x="441" y="70" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">waveform</text>'
+          + '<rect x="480" y="55" width="140" height="50" rx="8" fill="none" stroke-width="1.5"></rect>'
+          + '<text x="550" y="76" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700">Board view</text>'
+          + '<text x="550" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">pins + waveform</text>'
+      };
+    }
+    if (id === 'stmsim') {
+      return { w: 640, h: 160,
+        aria: 'Diagram: C firmware is compiled and run inside a sandboxed QEMU model of STM32 peripherals, producing a live GPIO and peripheral trace without a physical board.',
+        caption: 'Firmware runs against a modelled STM32 in QEMU instead of physical hardware — a tight edit-run loop with no board in the loop.',
+        svg: '<rect x="20" y="55" width="140" height="50" rx="8" fill="none" stroke-width="1.5"></rect>'
+          + '<text x="90" y="76" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700">C firmware</text>'
+          + '<text x="90" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">bare-metal</text>'
+          + '<line x1="160" y1="80" x2="222" y2="80" stroke-width="1.5"></line>' + ah(222, 80, 'r')
+          + '<text x="191" y="70" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">compile + run</text>'
+          + '<rect x="230" y="35" width="180" height="90" rx="10" fill="' + color + '" fill-opacity="0.12" stroke="' + color + '" stroke-width="1.8"></rect>'
+          + '<text x="320" y="58" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700" fill="' + color + '">sandboxed QEMU</text>'
+          + '<text x="320" y="76" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">STM32 peripherals modelled</text>'
+          + '<text x="320" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">no physical board needed</text>'
+          + '<text x="320" y="108" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.75">tight edit-run loop</text>'
+          + '<line x1="410" y1="80" x2="472" y2="80" stroke-width="1.5"></line>' + ah(472, 80, 'r')
+          + '<text x="441" y="70" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">GPIO trace</text>'
+          + '<rect x="480" y="55" width="140" height="50" rx="8" fill="none" stroke-width="1.5"></rect>'
+          + '<text x="550" y="76" text-anchor="middle" font-family=' + F + ' font-size="12" font-weight="700">Board view</text>'
+          + '<text x="550" y="92" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.6">live peripheral trace</text>'
+      };
+    }
+    if (id === 'mcc-sizing-tool') {
+      return { w: 640, h: 195,
+        aria: 'Diagram: a transformer feeds a motor through a feeder cable; full-load current and voltage drop are computed both analytically and from manufacturer tables, converging on an automatic percentage deviation check before the specification is accepted.',
+        caption: 'Every result computed two ways — analytically and against manufacturer tables — with the percentage deviation flagged automatically before a spec goes to procurement.',
+        svg: '<rect x="30" y="30" width="60" height="40" rx="4" fill="none" stroke-width="1.4"></rect><text x="60" y="54" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">XFMR</text><text x="60" y="86" text-anchor="middle" font-family=' + F + ' font-size="9" opacity="0.55">Transformer</text>'
+          + '<line x1="90" y1="50" x2="240" y2="50" stroke-width="1.6" stroke="' + color + '"></line>'
+          + '<polyline points="240,50 248,42 256,58 264,42 272,58 280,50" fill="none" stroke-width="1.6" stroke="' + color + '"></polyline>'
+          + '<line x1="280" y1="50" x2="500" y2="50" stroke-width="1.6" stroke="' + color + '"></line>'
+          + '<text x="280" y="34" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700" fill="' + color + '">I_FL, I_inrush, &Delta;V</text>'
+          + '<circle cx="530" cy="50" r="26" fill="none" stroke-width="1.4"></circle><text x="530" y="56" text-anchor="middle" font-family=' + F + ' font-size="14" font-weight="700">M</text><text x="530" y="94" text-anchor="middle" font-family=' + F + ' font-size="9" opacity="0.55">Motor load</text>'
+          + '<rect x="30" y="105" width="230" height="34" rx="6" fill="none" stroke-width="1.2"></rect><text x="145" y="126" text-anchor="middle" font-family=' + F + ' font-size="10">Analytical — first principles</text>'
+          + '<rect x="30" y="149" width="230" height="34" rx="6" fill="none" stroke-width="1.2"></rect><text x="145" y="170" text-anchor="middle" font-family=' + F + ' font-size="9.5">Manufacturer data (SANS1507, WEG IE3)</text>'
+          + '<line x1="260" y1="122" x2="358" y2="146" stroke-width="1.2"></line>'
+          + '<line x1="260" y1="166" x2="358" y2="146" stroke-width="1.2"></line>'
+          + '<polygon points="400,112 442,146 400,180 358,146" fill="' + color + '" fill-opacity="0.14" stroke="' + color + '" stroke-width="1.6"></polygon>'
+          + '<text x="400" y="142" text-anchor="middle" font-family=' + F + ' font-size="9" font-weight="700" fill="' + color + '">% deviation</text><text x="400" y="154" text-anchor="middle" font-family=' + F + ' font-size="9" font-weight="700" fill="' + color + '">check</text>'
+          + '<line x1="442" y1="146" x2="500" y2="146" stroke-width="1.3"></line>' + ah(500, 146, 'r')
+          + '<text x="560" y="141" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">spec</text><text x="560" y="155" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">accepted</text>'
+      };
+    }
+    if (id === 'sram-capture') {
+      return { w: 640, h: 190,
+        aria: 'Timing diagram: chip-enable and output-enable signals fall low together, and a 10 nanosecond valid-data window opens 70 nanoseconds afterward, which the FPGA logic samples exactly inside.',
+        caption: 'E_n and G_n fall together; the data is only valid for a 10ns window starting 70ns later — the FPGA logic samples precisely inside it.',
+        svg: '<polyline points="40,40 200,40 200,70 560,70" fill="none" stroke-width="1.6"></polyline>'
+          + '<text x="18" y="44" text-anchor="end" font-family=' + F + ' font-size="11" font-weight="700">E_n</text>'
+          + '<polyline points="40,95 220,95 220,125 560,125" fill="none" stroke-width="1.6"></polyline>'
+          + '<text x="18" y="99" text-anchor="end" font-family=' + F + ' font-size="11" font-weight="700">G_n</text>'
+          + '<rect x="270" y="15" width="40" height="145" fill="' + color + '" fill-opacity="0.16" stroke="' + color + '" stroke-width="1.2" stroke-dasharray="3,3"></rect>'
+          + '<text x="290" y="11" text-anchor="middle" font-family=' + F + ' font-size="9.5" font-weight="700" fill="' + color + '">10ns valid window</text>'
+          + '<line x1="200" y1="165" x2="200" y2="175" stroke-width="1.2" stroke="' + color + '"></line><line x1="270" y1="165" x2="270" y2="175" stroke-width="1.2" stroke="' + color + '"></line>'
+          + '<line x1="200" y1="170" x2="270" y2="170" stroke-width="1.2" stroke="' + color + '"></line>'
+          + '<text x="235" y="184" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700" fill="' + color + '">70ns</text>'
+      };
+    }
+    if (id === 'udp-motion-sim') {
+      return { w: 640, h: 185,
+        aria: 'Sequence diagram: a main thread spawns a client thread and a server thread; the client sends a checksummed packet to the server, and the server validates and replies the same way.',
+        caption: 'A main thread spawns a client and server thread; each direction carries its own checksum-validated packet — full-duplex and thread-safe.',
+        svg: '<rect x="270" y="8" width="100" height="26" rx="6" fill="none" stroke-width="1.3"></rect><text x="320" y="26" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">main thread</text>'
+          + '<line x1="290" y1="34" x2="155" y2="40" stroke-width="1.1" stroke-dasharray="3,3" opacity="0.7"></line>' + ah(155, 40, 'd')
+          + '<line x1="350" y1="34" x2="485" y2="40" stroke-width="1.1" stroke-dasharray="3,3" opacity="0.7"></line>' + ah(485, 40, 'd')
+          + '<circle cx="150" cy="55" r="15" fill="none" stroke-width="1.3"></circle><text x="150" y="59" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">C</text>'
+          + '<text x="150" y="82" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.7">Client thread</text>'
+          + '<circle cx="490" cy="55" r="15" fill="none" stroke-width="1.3"></circle><text x="490" y="59" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">S</text>'
+          + '<text x="490" y="82" text-anchor="middle" font-family=' + F + ' font-size="10" opacity="0.7">Server thread</text>'
+          + '<line x1="150" y1="90" x2="150" y2="172" stroke-width="1.1" stroke-dasharray="2,4" opacity="0.4"></line>'
+          + '<line x1="490" y1="90" x2="490" y2="172" stroke-width="1.1" stroke-dasharray="2,4" opacity="0.4"></line>'
+          + '<line x1="150" y1="112" x2="483" y2="112" stroke-width="1.4" stroke="' + color + '"></line><polygon points="490,112 480,106 480,118" fill="' + color + '"></polygon>'
+          + '<text x="320" y="104" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">sendto() &middot; checksum</text>'
+          + '<line x1="490" y1="150" x2="157" y2="150" stroke-width="1.4" stroke="' + color + '"></line><polygon points="150,150 160,144 160,156" fill="' + color + '"></polygon>'
+          + '<text x="320" y="142" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">recvfrom() &middot; validate</text>'
+      };
+    }
+    if (id === 'sim-mount') {
+      return { w: 640, h: 160,
+        aria: 'Diagram: a rack-mounted computer secured by a hinge, a quick-release hook and an M6 bolt, resisting the inertial force generated by simulator motion.',
+        caption: 'A hinge-and-hook mount plus M6 bolts resist the inertial loads from simulator motion, while keeping the unit serviceable with a single release.',
+        svg: '<rect x="200" y="40" width="240" height="70" rx="4" fill="none" stroke-width="1.5"></rect><text x="320" y="80" text-anchor="middle" font-family=' + F + ' font-size="11" font-weight="700">4U simulation computer</text>'
+          + '<circle cx="200" cy="75" r="6" fill="' + color + '"></circle><text x="200" y="130" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">hinge</text>'
+          + '<path d="M440,95 L458,95 L458,112 L448,112" fill="none" stroke="' + color + '" stroke-width="2"></path><text x="465" y="118" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">hook</text>'
+          + '<line x1="320" y1="110" x2="320" y2="128" stroke="' + color + '" stroke-width="2.5"></line><rect x="313" y="126" width="14" height="8" rx="1" fill="' + color + '"></rect><text x="320" y="148" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">M6 bolt</text>'
+          + '<line x1="600" y1="55" x2="450" y2="55" stroke-width="1.3" opacity="0.6"></line>' + ah(450, 55, 'l')
+          + '<text x="600" y="40" text-anchor="end" font-family=' + F + ' font-size="9" opacity="0.6">inertial force (sim motion)</text>'
+      };
+    }
+    if (id === 'network-vacation-work') {
+      return { w: 640, h: 180,
+        aria: 'Network diagram: a central server connected to four plant sites; one link, highlighted, was restored after going down.',
+        caption: 'Central server connected to four plant sites — one LAN link, highlighted, restored after going down.',
+        svg: '<circle cx="320" cy="90" r="26" fill="none" stroke-width="1.5"></circle><text x="320" y="94" text-anchor="middle" font-family=' + F + ' font-size="10" font-weight="700">Server</text>'
+          + '<line x1="320" y1="64" x2="320" y2="43" stroke-width="1.3"></line>'
+          + '<line x1="346" y1="90" x2="502" y2="90" stroke-width="1.3"></line>'
+          + '<line x1="294" y1="90" x2="138" y2="90" stroke="rgba(236,231,225,.3)" stroke-width="1.3" stroke-dasharray="4,4"></line>'
+          + '<line x1="294" y1="90" x2="138" y2="90" stroke="' + color + '" stroke-width="2.2"></line>'
+          + '<text x="216" y="79" text-anchor="middle" font-family=' + F + ' font-size="9" font-weight="700" fill="' + color + '">restored</text>'
+          + '<line x1="320" y1="116" x2="320" y2="137" stroke-width="1.3"></line>'
+          + '<circle cx="320" cy="25" r="18" fill="none" stroke-width="1.3"></circle><text x="320" y="29" text-anchor="middle" font-family=' + F + ' font-size="9">Site A</text>'
+          + '<circle cx="520" cy="90" r="18" fill="none" stroke-width="1.3"></circle><text x="520" y="94" text-anchor="middle" font-family=' + F + ' font-size="9">Site B</text>'
+          + '<circle cx="120" cy="90" r="18" fill="none" stroke="' + color + '" stroke-width="1.8"></circle><text x="120" y="94" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">Site C</text>'
+          + '<circle cx="320" cy="155" r="18" fill="none" stroke-width="1.3"></circle><text x="320" y="159" text-anchor="middle" font-family=' + F + ' font-size="9">Site D</text>'
+      };
+    }
+    if (id === 'electrical-instrumentation-vacation') {
+      var rows = [['insulation resistance', 70], ['terminal torque', 95], ['control loop response', 120]];
+      var rowsSvg = rows.map(function (r) {
+        var y = r[1];
+        return '<rect x="356" y="' + (y - 10) + '" width="14" height="14" rx="3" fill="none" stroke-width="1.2"></rect>'
+          + '<path d="M358,' + (y - 3) + ' L362,' + (y + 1) + ' L368,' + (y - 8) + '" fill="none" stroke="' + color + '" stroke-width="1.6"></path>'
+          + '<text x="380" y="' + (y + 2) + '" font-family=' + F + ' font-size="9.5" opacity="0.8">' + r[0] + '</text>';
+      }).join('');
+      return { w: 640, h: 170,
+        aria: 'Diagram: an analog gauge needle sitting within its normal operating range, beside a checklist of routine electrical and instrumentation inspection items.',
+        caption: 'Routine inspection and maintenance of plant electrical equipment — reading gauges, checking loops, keeping the plant in its normal operating band.',
+        svg: '<path d="M90,120 A80,80 0 0 1 250,120" fill="none" stroke-width="2"></path>'
+          + '<path d="M210,51 A80,80 0 0 1 130,51" fill="none" stroke="' + color + '" stroke-width="5" stroke-linecap="round"></path>'
+          + '<line x1="170" y1="120" x2="159" y2="56" stroke-width="2.5"></line><circle cx="170" cy="120" r="6" fill="currentColor"></circle>'
+          + '<text x="170" y="145" text-anchor="middle" font-family=' + F + ' font-size="9" fill="' + color + '">normal range</text>'
+          + '<rect x="340" y="30" width="250" height="115" rx="6" fill="none" stroke-width="1.3"></rect>'
+          + '<text x="356" y="52" font-family=' + F + ' font-size="10" font-weight="700">Inspection checklist</text>'
+          + rowsSvg
+      };
+    }
+    return null;
+  }
+
+  function projectDiagramBlock(proj) {
+    var d = diagramFor(proj.id, proj.color);
+    if (!d) {
+      return '<div style="height:150px;margin:26px 0;border-radius:12px;border:1px solid rgba(255,255,255,.09);background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px);display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\',monospace;font-size:13px;color:rgba(236,231,225,.4);">diagram coming soon</div>';
+    }
+    return '<figure style="margin:26px 0 30px;padding:22px 24px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);">'
+      + '<svg viewBox="0 0 ' + d.w + ' ' + d.h + '" role="img" aria-label="' + esc(d.aria) + '" style="width:100%;height:auto;display:block;color:rgba(236,231,225,.6);fill:currentColor;stroke:currentColor;">' + d.svg + '</svg>'
+      + '<figcaption style="margin-top:12px;font-size:12.5px;line-height:1.5;color:rgba(236,231,225,.45);text-align:center;">' + esc(d.caption) + '</figcaption>'
+      + '</figure>';
+  }
+
   function renderProject(proj) {
     var tagsHtml = proj.tags.map(function (t) { return '<span style="padding:6px 13px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);font-size:13px;color:#ece7e1;">' + esc(t) + '</span>'; }).join('');
     var descHtml = proj.desc.map(function (d) { return '<p style="font-size:16.5px;line-height:1.72;color:rgba(236,231,225,.9);margin:0 0 18px;">' + esc(d) + '</p>'; }).join('');
@@ -581,7 +898,7 @@
       + '<div style="max-width:800px;margin:0 auto;padding:30px 40px 60px;">'
       + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px;">' + tagsHtml + '</div>'
       + descHtml
-      + '<div style="height:150px;margin:26px 0;border-radius:12px;border:1px solid rgba(255,255,255,.09);background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px);display:flex;align-items:center;justify-content:center;font-family:\'JetBrains Mono\',monospace;font-size:13px;color:rgba(236,231,225,.4);">project shot</div>'
+      + projectDiagramBlock(proj)
       + '<div style="font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(236,231,225,.5);margin:30px 0 14px;">Highlights</div>'
       + '<div style="display:flex;flex-direction:column;gap:11px;margin-bottom:32px;">' + highlightsHtml + '</div>'
       + linksHtml + '</div></div>';
@@ -613,14 +930,22 @@
     bootId = setInterval(function () {
       if (state.boot >= 100) return;
       var n = Math.min(100, state.boot + 6 + Math.random() * 11);
-      if (n >= 100) { clearInterval(bootId); setTimeout(function () { setState({ booted: true }); }, 700); }
+      if (n >= 100) {
+        clearInterval(bootId);
+        setTimeout(function () {
+          setState({ booted: true, hint: true });
+          setTimeout(function () { if (state.hint) setState({ hint: false }); }, 9000);
+        }, 700);
+      }
       setState({ boot: n });
     }, 130);
   }
+  function dismissHint() { setState({ hint: false }); }
 
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
       if (state.ctx.open) { setState({ ctx: { open: false, x: 0, y: 0 } }); return; }
+      if (state.help) { setState({ help: false }); return; }
       if (state.overview) { setState({ overview: false }); return; }
       if (state.active) { setState({ active: null }); return; }
     }
@@ -632,6 +957,7 @@
   window.App = {
     open: open, openPost: openPost, blogBack: blogBack,
     toggleOverview: toggleOverview, closeOverview: closeOverview, closeWindow: closeWindow,
+    toggleHelp: toggleHelp, closeHelp: closeHelp, dismissHint: dismissHint,
     setFiles: setFiles, setWall: setWall,
     onDeskContext: onDeskContext, onDeskClick: onDeskClick,
     onSearchInput: onSearchInput, onSearchKey: onSearchKey,

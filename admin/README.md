@@ -23,9 +23,11 @@ content change.
   `server.py`. The backend has no login code and trusts that anything
   reaching it already passed nginx's auth check — which is also why it binds
   to `127.0.0.1` only and must never be exposed directly.
-- `deploy.sh` seeds `content.json` on the VM only if it doesn't already
-  exist, so `git reset --hard` on every deploy never clobbers content you've
-  edited live through the admin panel.
+- `deploy.sh` copies `content.json` from the repo into place on **every**
+  deploy, so git is the source of truth — a `git push` to `main` overwrites
+  whatever's live, including anything saved through `/admin` that wasn't
+  also committed. Treat `/admin` as a quick way to try an edit or fix
+  something in a pinch, not as durable storage.
 
 ## One-time setup on the VM
 
@@ -59,7 +61,7 @@ directly (SSH in as `ubuntu`, or however you normally reach it).
    systemctl --user status pontsho-admin.service   # should say active (running)
    ```
 
-4. **Push to `main`.** The next deploy will seed `content.json` into
+4. **Push to `main`.** The next deploy will copy `content.json` into
    `/var/www/pontsho-mbizo/content.json` and restart the admin backend
    automatically (deploy.sh checks whether the service is enabled first, so
    it's a no-op if you haven't done step 3 yet).
@@ -69,13 +71,15 @@ directly (SSH in as `ubuntu`, or however you normally reach it).
 
 ## Day to day
 
-Once set up, no git/terminal needed for content changes — open `/admin/`,
-edit projects or posts, click **Save all changes**. It writes straight to
-`content.json` on the VM and the live site picks it up on next page load.
+Open `/admin/`, edit projects or posts, click **Save all changes** — it
+writes straight to `content.json` on the VM and the live site picks it up
+on next page load. Good for a fast, no-terminal fix.
 
-Git pushes are still how you ship changes to the *site itself* (index.html,
-the admin UI, or server.py) — those still go through the normal CI/CD
-pipeline. Content and code are deliberately on separate tracks now.
+**But it doesn't persist across deploys.** The next `git push` to `main`
+overwrites `content.json` on the VM with the repo's copy, silently dropping
+any admin-only edit that was never committed. If you make a change through
+`/admin` that you want to keep, copy it into the repo's `content.json` and
+push — that's the only durable path now.
 
 ## Recovering from a bad edit
 

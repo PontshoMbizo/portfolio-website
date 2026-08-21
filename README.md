@@ -15,15 +15,15 @@ portfolio links out to (see the nikaVSimulator / STM Simulator project entries).
 
 - `index.html` — the site itself. One file, everything inlined; fetches
   `content.json` at load for its data.
-- `content.json` — projects, blog posts, skills, contact info. Seed/default
-  copy lives here in git; the live copy on the VM is edited via `/admin/`
-  and is *not* overwritten by redeploys (see "Editing content" below).
+- `content.json` — projects, blog posts, skills, contact info. Git is the
+  source of truth: every deploy overwrites the live copy on the VM with
+  whatever is in the repo (see "Editing content" below).
 - `admin/` — the `/admin/` content-editing panel (static UI + a small Python
   stdlib-only backend). See `admin/README.md` for what it is and one-time VM
   setup.
 - `deploy.sh` — runs on the VM (via the CI/CD pipeline below): pulls latest,
-  copies `index.html` and the admin UI into nginx's serving root, seeds
-  `content.json` on first run only, restarts the admin backend, health-checks.
+  copies `index.html`, `cv.pdf`, `content.json` and the admin UI into
+  nginx's serving root, restarts the admin backend, health-checks.
 - `.github/workflows/ci.yml` — validates the embedded JS and `content.json`
   parse cleanly, and that `admin/server.py` compiles, on every push/PR.
 - `.github/workflows/deploy.yml` — on push to `main`, SSHes into the VM with a
@@ -53,15 +53,14 @@ shared with the nikaVSimulator/stmVSimulator repos' deploy keys:
 Projects, blog posts, skills and contact info live in `content.json`, which
 `index.html` fetches at load. Two ways to edit it:
 
-- **`/admin/` panel** (once set up on the VM — see `admin/README.md`): a
-  browser UI for adding/editing projects and posts, no git push needed. This
-  is the intended day-to-day workflow.
 - **Directly**: edit `content.json` and push. CI validates it's well-formed
-  JSON; `deploy.sh` only *seeds* it on the VM the first time (so it never
-  overwrites live edits made through `/admin/`) — a direct git-side edit to
-  `content.json` after `/admin/` has been used at least once won't reach the
-  VM on its own; make the same change through the admin panel instead, or
-  copy the file over by hand.
+  JSON; the next deploy overwrites the live file with this version. This is
+  the durable way to make a content change — it survives future deploys.
+- **`/admin/` panel** (once set up on the VM — see `admin/README.md`): a
+  browser UI for adding/editing projects and posts, no git push needed. Handy
+  for a quick fix or trying something out, but **the next `git push` to
+  `main` overwrites whatever you saved there** with whatever's in the repo —
+  copy any edit you want to keep back into `content.json` and commit it.
 
 `index.html` also keeps the same data hardcoded as a fallback (used only if
 `content.json` fails to fetch), so the site still renders even if that file
