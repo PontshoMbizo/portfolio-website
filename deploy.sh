@@ -31,9 +31,15 @@ echo "== removing old /admin (no longer part of the site) =="
 rm -rf /var/www/pontsho-mbizo/admin
 
 echo "== health check =="
-if curl -sf -o /dev/null -H "Host: pontsho-mbizo.co.za" http://127.0.0.1/; then
+# Ask nginx for the real site on this machine: HTTPS first (pinned to
+# 127.0.0.1 so it never leaves the VM), then plain HTTP with the Host header.
+SITE=pontsho-mbizo.co.za
+if curl -sfk -o /dev/null --resolve "$SITE:443:127.0.0.1" "https://$SITE/content.json" \
+   || curl -sf -o /dev/null -H "Host: $SITE" "http://127.0.0.1/content.json"; then
   echo "portfolio deploy: OK"
 else
   echo "portfolio deploy: FAILED health check" >&2
+  curl -sk -o /dev/null -w "https: %{http_code}\n" --resolve "$SITE:443:127.0.0.1" "https://$SITE/content.json" >&2 || true
+  curl -s -o /dev/null -w "http:  %{http_code}\n" -H "Host: $SITE" "http://127.0.0.1/content.json" >&2 || true
   exit 1
 fi
