@@ -1,78 +1,190 @@
 \documentclass[10pt,a4paper]{article}
+
+\usepackage[top=1.2cm,bottom=1.2cm,left=1.8cm,right=1.8cm]{geometry}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=0.62in,top=0.5in,bottom=0.45in]{geometry}
-\usepackage{xcolor,enumitem,titlesec,hyperref,microtype}
-\definecolor{accent}{HTML}{6B3FA0}
-\hypersetup{colorlinks=true,urlcolor=accent,linkcolor=accent,pdftitle={Pontsho Mbizo — CV},pdfauthor={Pontsho Mbizo}}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\rmdefault}
+
+\definecolor{accent}{RGB}{102,51,153}
+\definecolor{subtle}{RGB}{90,90,90}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=accent,
+  pdfauthor={Pontsho Mbizo},
+  pdftitle={Pontsho Mbizo --- CV}
+}
+
+\titleformat{\section}
+  {\small\bfseries\color{accent}}
+  {}{0em}{}
+  [\vspace{-4pt}\textcolor{accent}{\rule{\linewidth}{0.55pt}}\vspace{-1pt}]
+
+\titlespacing{\section}{0pt}{6pt}{2pt}
+
+\setlist[itemize]{
+  leftmargin=12pt,
+  topsep=0pt,
+  itemsep=0pt,
+  parsep=0pt,
+  label=\textbullet
+}
+
+\setlist[enumerate]{
+  leftmargin=18pt,
+  topsep=0pt,
+  itemsep=0pt,
+  parsep=0pt
+}
+
+% Work/education entry command
+\newcommand{\workentry}[2]{%
+  \noindent\textbf{\small #1} \hfill
+  \textit{\small #2}\par
+  \vspace{2pt}
+}
+
 \pagestyle{empty}
-\setlength{\parindent}{0pt}
-\titleformat{\section}{\color{accent}\bfseries\small\scshape\large}{}{0pt}{}[\vspace{-1pt}\titlerule]
-\titlespacing*{\section}{0pt}{8pt}{4pt}
-\setlist[itemize]{leftmargin=1.1em,itemsep=0.5pt,topsep=1pt,parsep=0pt}
-\newcommand{\role}[3]{\textbf{#1}, \textbf{#2}\hfill\textit{#3}\par\vspace{-1pt}}
+\setlength{\parskip}{0pt}
+
 \begin{document}
+
+% ─── Header ──────────────────────────────────────────────────────────────────
 \begin{center}
-{\color{accent}\LARGE\scshape Pontsho Mbizo}\\[3pt]
-{\small Rondebosch, Cape Town, Western Cape $\bullet$ +27 81 708 5045 $\bullet$ \href{mailto:pontshombizo329@gmail.com}{pontshombizo329@gmail.com}\\
-\href{https://www.linkedin.com/in/pontshombizo}{LinkedIn: pontshombizo} $\bullet$ \href{https://github.com/PontshoMbizo}{GitHub: PontshoMbizo}}
+  {\LARGE\bfseries\color{accent} PONTSHO MBIZO}\\[3pt]
+  {\small
+    Rondebosch, Cape Town, Western Cape
+    \textbullet\ +27 81 708 5045
+    \textbullet\ 
+    \href{mailto:pontshombizo329@gmail.com}{pontshombizo329@gmail.com}
+  }\\[1pt]
+  {\small
+    \href{https://www.linkedin.com/in/PontshoMbizo/}{LinkedIn: PontshoMbizo}
+    \textbullet\ 
+    \href{https://github.com/PontshoMbizo}{GitHub: PontshoMbizo}
+  }
 \end{center}
-\vspace{-6pt}
-\section*{Summary}
-Final-year Electrical \& Computer Engineering student (UCT, ECSA-accredited) with four industry placements across defence, mining and infrastructure. I build hardware and embedded systems that work, and I check them against measurements: a gantry robot with closed-loop control and on-device vision, FPGA and microcontroller simulators, and Excel tools adopted by an engineering team. Looking for a graduate hardware engineering role.
 
-\section*{Projects}
-\role{Weeding gantry robot}{final-year research project (EEE4022S)}{2026}
-\begin{itemize}
-\item Built a low-cost three-axis gantry (ESP32-C3, Raspberry Pi Zero W) that photographs a bed, classifies weeds on the device and sprays each one. Wrote the Pi-side software (Python) and ESP32-C3 motion firmware with homing, stall detection and a safety watchdog.
-\item 245 closed-loop moves ended within one sensor count (1.07 mm on X and Y); worst settling time 1.86 s against a 3 s limit; positioning within 14 mm against a 20 mm requirement. Detection scored on a spray-grid metric: F1 0.908 for segmentation against 0.654 for YOLOv8n.
-\end{itemize}
-\role{fpgasim and mcusim}{in-browser hardware simulators}{2025 -- 2026}
-\begin{itemize}
-\item \textbf{fpgasim:} write Verilog in the browser and run it through Icarus Verilog (Docker) in an ephemeral, network-less container, with a Tang Nano 9K board model and waveform view. 69 unit tests; 272--375 ms round trip.
-\item \textbf{mcusim:} compile bare-metal C for an STM32F103 Blue Pill with arm-none-eabi-gcc, run it in QEMU and render the GPIO trace on a board view. 68 unit tests; 357--469 ms round trip.
-\end{itemize}
-\role{scope.io}{interview prep for electronics engineers}{2026}
-\begin{itemize}
-\item LeetCode-style platform that grades solutions on the server from CircuitJS, fpgasim and mcusim; 26 problems written, 7 live on the demo.
-\end{itemize}
+\vspace{1pt}
+\textcolor{accent}{\rule{\linewidth}{0.55pt}}
 
-\section*{Work Experience}
-\role{Project Engineering Intern}{Tharisa Minerals}{Dec 2025 -- Jan 2026}
+% ─── Summary ─────────────────────────────────────────────────────────────────
+\section{SUMMARY}
+
+Final-year Electrical \& Computer Engineering student with four industry placements across defence, mining, and infrastructure. I build hardware and embedded systems that work and check them against measurements: a weeding gantry robot with closed-loop control and on-device vision, browser-based FPGA, microcontroller and control-system simulators, and parameterised tools that engineering teams have adopted. I communicate technical findings clearly to diverse stakeholders.
+
+% ─── Projects ────────────────────────────────────────────────────────────────
+\section{PROJECTS}
+
+\workentry{Weeding Gantry Robot --- final-year research project (EEE4022S)}{2026}
 \begin{itemize}
-\item Built a parameterised three-phase MCC sizing tool in Excel (full-load currents, voltage drop, power factor, operating cost per motor), validated analytically and against manufacturer data (SANS 1507, WEG IE3 motors).
-\item Percentage-deviation check surfaces specification errors before procurement; methodology report accepted by the engineering department; tool adopted by the site team as the baseline for feeder studies.
+  \item Built a low-cost three-axis gantry (Raspberry Pi Zero W, ESP32-C3) that photographs a crop bed, classifies weeds on the device and sprays each one; wrote the Python operator software and the ESP32 closed-loop motion firmware with homing, stall detection and a safety watchdog.
+  \item 245 closed-loop moves ended within one sensor count (1.07 mm); worst settling time 1.86 s against a 3 s limit; positioning within 14 mm against a 20 mm requirement. Spray-grid detection F1 0.908 for segmentation against 0.654 for YOLOv8n.
 \end{itemize}
-\role{Engineering Intern}{Cybicom Atlas Defence}{Jun -- Jul 2025}
+\vspace{2pt}
+\workentry{fpgasim and mcusim --- in-browser hardware simulators}{2025 -- 2026}
 \begin{itemize}
-\item Designed a 200 MHz FPGA capture system (Verilog, Intel MAX10) to non-destructively read a battery-backed SRAM that presents data for about 10 ns, 70 ns after enable, with a 5 ns timer and a 5 V to 3.3 V buffer stage.
-\item Built a bidirectional multi-threaded UDP client/server in C (POSIX threads) with checksums and handover documentation for a motion simulator.
-\item Designed and 3D-printed a parametric Fusion 360 mount that secures a 4U simulation computer against inertial loads.
-\item Took part in an Acceptance Test Procedure for a full motion simulation system.
+  \item \textbf{fpgasim:} Verilog in the browser, simulated with Icarus Verilog in ephemeral, network-less containers, on a Tang Nano 9K board model with waveforms; 69 unit tests, 272--375 ms round trip.
+  \item \textbf{mcusim:} bare-metal C for an STM32F103 Blue Pill, compiled with arm-none-eabi-gcc and run in QEMU, with the GPIO trace drawn on a board view; 68 unit tests, 357--469 ms round trip.
 \end{itemize}
-\role{Network Engineer/Artisan (Vacation Work)}{Tharisa Minerals}{Dec 2024 -- Jan 2025}
+\vspace{2pt}
+\workentry{scope.io --- interview-prep platform for electronics engineers}{2026}
 \begin{itemize}
-\item Restored LAN connectivity across plant sites and connected new office spaces; investigated Microsoft Cloud PC as a cost-reduction option.
+  \item LeetCode-style platform (Next.js, Firebase) that grades circuit, FPGA and firmware solutions on the server against reference waveforms; 26 problems written, 126 unit tests.
 \end{itemize}
-\role{Electrical and Instrumentation Vacation Work}{Tharisa Minerals}{Dec 2023 -- Jan 2024}
+\vspace{2pt}
+\workentry{fulgurlab --- Simulink-style block-diagram simulator}{2026}
 \begin{itemize}
-\item Assisted Electrical Artisans and Instrumentation Technicians with maintenance and inspection of plant equipment and control systems.
+  \item React editor and Node server that compiles diagrams to Xcos models and simulates them with headless Scilab in a hardened container; 19 block types checked against analytic answers, about 0.23 s per run.
+\end{itemize}
+\vspace{2pt}
+\workentry{SRAM data capture --- MAX10 FPGA (published from the Cybicom internship)}{2025 -- 2026}
+\begin{itemize}
+  \item Found and fixed a timing bug in my own capture logic while publishing it: re-armed the timer per access and synchronised the enable lines; a phase-sweep testbench went from 2 to 16 of 16 correct captures in simulation.
 \end{itemize}
 
-\section*{Education}
-\role{BSc Eng Electrical and Computer Engineering, University of Cape Town}{}{2022 -- Present}
+% ─── Work Experience ─────────────────────────────────────────────────────────
+\section{WORK EXPERIENCE}
+
+\workentry{Project Engineering Intern, Tharisa Minerals}{Dec 2025 -- Jan 2026}
 \begin{itemize}
-\item Final year: High Performance Embedded Systems, DSP \& ML, Controls \& Instrumentation, Law for Engineers. Design project: oceanographic sensor buoy (full systems engineering lifecycle).
+  \item Built a parameterised three-phase MCC sizing tool in Excel: full-load currents, voltage drop, power factor, and operating cost per motor --- validated analytically and against manufacturer data (SANS 1507, WEG IE3 motors).
+  \item Built-in percentage-deviation check surfaces specification errors before procurement; methodology report accepted by engineering department.
+  \item Tool adopted by the site team as the baseline for all feeder studies; presented cost-comparison results to the project engineering team.
 \end{itemize}
 
-\section*{Additional Information}
+\vspace{3pt}
+
+\workentry{Engineering Intern, Cybicom Atlas Defence}{Jun -- Jul 2025}
 \begin{itemize}
-\item \textbf{Software \& Data:} C/C++, Python (NumPy, pandas, scikit-learn), MATLAB
-\item \textbf{Hardware \& Firmware:} Verilog HDL, FPGA, STM32, QEMU, KiCad, Intel Quartus Prime
-\item \textbf{Design \& Tools:} Fusion 360, Onshape, Docker, Git, Linux (Fedora), \LaTeX, MS Excel
-\item \textbf{Languages:} English (fluent), Setswana (native), isiZulu and isiXhosa (conversational)
-\item \textbf{Awards / Activities:} UCT Plus Silver (45 hours role-modelling leadership, residence mentoring); Dell Young Leader; Electrical Engineering peer mentor at UCT
+  \item Designed a high-speed FPGA capture system (Verilog, Intel MAX10) to non-destructively read a battery-backed SRAM on a legacy control system that presents data for about 10 ns, 70 ns after enable --- 200 MHz PLL, 5 ns timer, 5 V to 3.3 V buffer stage.
+  \item Built a bidirectional, multi-threaded UDP communication system in C (POSIX threads) for a motion simulator, with custom checksums and full handover documentation.
+  \item Designed and 3D-printed a parametric mounting system in Fusion 360 to secure a 4U simulation computer against inertial loads inside a simulator instructor station.
+  \item Participated in an Acceptance Test Procedure for a full motion simulation system across mechanical, electrical, and software subsystems.
 \end{itemize}
-\vspace{2pt}\textit{References available upon request.}
+
+\vspace{3pt}
+
+\workentry{Network Engineer/Artisan (Vacation Work), Tharisa Minerals}{Dec 2024 -- Jan 2025}
+\begin{itemize}
+  \item Restored LAN connectivity across multiple plant sites; investigated Microsoft Cloud PC as a cost-reduction strategy for remote operations.
+  \item Expanded network infrastructure by connecting new office spaces and improving plant-wide network access.
+\end{itemize}
+
+\vspace{3pt}
+
+\workentry{Electrical and Instrumentation Vacation Work, Tharisa Minerals}{Dec 2023 -- Jan 2024}
+\begin{itemize}
+  \item Assisted Electrical Artisans and Instrumentation Technicians in routine maintenance, inspection, and upkeep of electrical equipment and control systems.
+\end{itemize}
+
+% ─── Education ───────────────────────────────────────────────────────────────
+\section{EDUCATION}
+
+\workentry{BSc Eng Electrical and Computer Engineering (ECSA-accredited)}{2023 -- Present}
+{\small University of Cape Town}\par
+\vspace{1pt}
+
+\begin{itemize}
+  \item Final-year: High Performance Embedded Systems, DSP \& ML, Controls \& Instrumentation, Law for Engineers; Design project --- oceanographic sensor buoy (full systems engineering lifecycle).
+  \item Earlier coursework: Embedded Systems, Electronic Devices \& Circuits, Control Systems, Programming.
+\end{itemize}
+
+% ─── Additional Information ───────────────────────────────────────────────────
+\section{ADDITIONAL INFORMATION}
+
+\begin{itemize}
+  \item \textbf{Software Development:} C/C++, Java, Python (NumPy, pandas, scikit-learn, OpenCV), JavaScript/TypeScript (React, Next.js, Node.js), MATLAB, Scilab/Xcos
+  \item \textbf{Hardware \& Firmware:} Verilog HDL, FPGA (Intel MAX10, Gowin), STM32, ESP32, Raspberry Pi, QEMU, Icarus Verilog, KiCad, Intel Quartus Prime
+  \item \textbf{Systems \& Tools:} Docker/Podman, Firebase, Git and GitHub Actions, Linux (Fedora), ROS 2, Fusion 360, Onshape \& FeatureScript, \LaTeX, MS Excel
+  \item \textbf{Languages:} English (Fluent), Setswana (Native), isiZulu (Basic), isiXhosa (Basic)
+  \item \textbf{Driver's License:} None
+  \item \textbf{Awards / Activities:}
+  \begin{enumerate}[label=\arabic*.]
+    \item UCT Plus Silver --- 45 Hours Role Modelling Leadership Award for residence mentoring.
+    \item Dell Young Leader.
+    \item Electrical Engineering peer mentor at UCT.
+  \end{enumerate}
+\end{itemize}
+
+% ─── References ──────────────────────────────────────────────────────────────
+\section{REFERENCES}
+
+\noindent
+\begin{minipage}[t]{0.5\linewidth}
+  {\small\textbf{Jason Suter}, Systems Engineer\\
+  Cybicom Atlas Defence \textbullet\ 082 488 0399}
+\end{minipage}%
+\begin{minipage}[t]{0.5\linewidth}
+  {\small\textbf{Robey Labuschagne}, Project Engineer\\
+  Tharisa Minerals \textbullet\ \href{mailto:rlabouschagne@tharisa.com}{rlabouschagne@tharisa.com}}
+\end{minipage}
+
 \end{document}
