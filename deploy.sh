@@ -31,7 +31,7 @@ echo "== removing old /admin (no longer part of the site) =="
 rm -rf /var/www/pontsho-mbizo/admin
 
 echo "== health check =="
-if curl -sf http://127.0.0.1/ >/dev/null; then
+if curl -sf -o /dev/null -H "Host: pontsho-mbizo.co.za" http://127.0.0.1/; then
   echo "portfolio deploy: OK"
 else
   echo "portfolio deploy: FAILED health check" >&2
