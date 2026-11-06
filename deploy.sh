@@ -20,6 +20,13 @@ cp cv.pdf /var/www/pontsho-mbizo/cv.pdf
 echo "== publishing content.json (git is the source of truth) =="
 cp content.json /var/www/pontsho-mbizo/content.json
 
+echo "== publishing favico.png and images/ =="
+cp favico.png /var/www/pontsho-mbizo/favico.png
+if [ -d images ]; then
+  rm -rf /var/www/pontsho-mbizo/images
+  cp -r images /var/www/pontsho-mbizo/images
+fi
+
 echo "== removing old /admin (no longer part of the site) =="
 rm -rf /var/www/pontsho-mbizo/admin
 

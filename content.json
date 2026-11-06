@@ -1,36 +1,197 @@
 {
   "projects": [
     {
-      "id": "nikavsim", "name": "nikaVSimulator", "full": "nikaVSimulator — FPGA / Verilog simulator", "year": "2025",
-      "color": "#8a63d2", "label": "V", "tags": ["FPGA", "Verilog", "Hardware Simulation"],
+      "id": "js06-gantry",
+      "name": "Weeding Gantry Robot",
+      "full": "Weeding Gantry Robot — final-year research project (EEE4022S)",
+      "year": "2026",
+      "color": "#4f7a3a",
+      "label": "JS",
+      "image": "images/projects/js06-gantry.jpg",
+      "blurb": "Low-cost gantry that finds and sprays weeds on the device",
+      "tags": [
+        "Robotics",
+        "Embedded",
+        "Control",
+        "Computer Vision"
+      ],
       "desc": [
-        "An in-browser simulator for the Tang Nano 9K FPGA. Write Verilog in a Monaco editor, run it through a sandboxed Icarus Verilog backend, and watch the board’s pins and waveforms come alive without touching real hardware.",
-        "The simulation backend runs untrusted HDL inside locked-down, network-less containers on a rootless Podman socket — full isolation from the host even if the input is hostile."
+        "A low-cost, fixed three-axis gantry that photographs a crop bed, decides on the device which plants are weeds and sprays water at each one. It was built for the final-year research project at UCT with a Raspberry Pi Zero W, an ESP32-C3, a 5 MP camera, an 840 × 480 mm bed and a R2000 parts budget.",
+        "The Pi runs the terminal interface, the offline detection pipeline and the spray jobs. The ESP32-C3 runs closed-loop control of the three axes at 5 ms, homing, stall detection and a link watchdog. Controller gains were derived from step-test plant models and checked in simulation across their uncertainty range before they ran on the hardware."
       ],
       "highlights": [
-        "Live board pin overlay synced to the simulated waveform.",
-        "Ephemeral, fully sandboxed per-run containers — no network, dropped capabilities, resource caps.",
-        "Deployed self-host, embeddable cross-origin by other tools."
+        "245 closed-loop moves ended within one sensor count (1.07 mm on X and Y); worst settling time 1.86 s against a 3 s limit.",
+        "Positioning within 14 mm of the command against a 20 mm requirement (a bound from six grid readings, not a precise measurement).",
+        "Detection scored on a spray-grid metric: F1 0.908 for segmentation against 0.654 for YOLOv8n. Per-image Otsu segmentation took 4.3 s on the Pi Zero W.",
+        "Limits stated in the report: the classifier was not trained on the planted crops, and the laser positioning test was not run."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "https://nika.pontsho-mbizo.co.za/" }, { "label": "View source", "url": "https://github.com/PontshoMbizo/nikaVSimulator" } ]
+      "links": [
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/js06-gantry-robot"
+        }
+      ]
     },
     {
-      "id": "stmsim", "name": "STM Simulator", "full": "stmVSimulator — STM32 peripheral simulator", "year": "2025",
-      "color": "#d98a2b", "label": "S", "tags": ["Embedded", "C", "Emulation"],
+      "id": "fpgasim",
+      "name": "fpgasim",
+      "full": "fpgasim — in-browser FPGA / Verilog simulator",
+      "year": "2025 – 2026",
+      "color": "#8a63d2",
+      "label": "V",
+      "blurb": "In-browser Verilog simulator with a Tang Nano 9K board model",
+      "tags": [
+        "FPGA",
+        "Verilog",
+        "Hardware Simulation"
+      ],
       "desc": [
-        "A simulator for the STM32 \"Blue Pill\" that lets bare-metal C firmware be tested without the physical board in hand — faster iteration, and CI that doesn’t need hardware in the loop.",
-        "Compiles and runs firmware through a sandboxed QEMU backend, then renders the resulting GPIO/peripheral trace on a live board view."
+        "An in-browser simulator for the Tang Nano 9K FPGA. Write Verilog in a Monaco editor, run it through Icarus Verilog in an ephemeral container, and watch the board’s pins and waveforms without touching real hardware.",
+        "Every run is untrusted HDL, so it executes in a throwaway, network-less container with dropped capabilities and hard limits: 12 s of run time, 256 MB of memory, 64 processes, a 16 MiB waveform and 200 KiB of source. Requests are rate-limited per IP."
       ],
       "highlights": [
-        "Models core peripherals closely enough to run real firmware.",
-        "Turns \"flash and pray\" into a tight edit-run loop.",
-        "Useful when hardware is shared or unavailable."
+        "Board model with 62 pins and Gowin .cst/.sdc constraint handling, synced to the simulated waveform.",
+        "272–375 ms round trip from source to waveform over four live runs.",
+        "69 unit tests (about 0.4 s) and an embeddable view used by scope.io."
       ],
-      "links": [ { "label": "Launch Simulator", "url": "https://stm.pontsho-mbizo.co.za/" }, { "label": "View source", "url": "https://github.com/PontshoMbizo/stmVSimulator" } ]
+      "links": [
+        {
+          "label": "Launch Simulator",
+          "url": "https://nika.pontsho-mbizo.co.za/"
+        },
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/fpgasim"
+        }
+      ],
+      "image": "images/projects/fpgasim.jpg"
     },
     {
-      "id": "mcc-sizing-tool", "name": "MCC Sizing Tool", "full": "Three-Phase MCC Sizing Tool — Tharisa Minerals", "year": "Dec 2025 – Jan 2026",
-      "color": "#d9a441", "label": "MCC", "tags": ["Power Systems", "MS Excel", "Industrial Engineering"],
+      "id": "mcusim",
+      "name": "mcusim",
+      "full": "mcusim — STM32 Blue Pill firmware simulator",
+      "year": "2025 – 2026",
+      "color": "#d98a2b",
+      "label": "S",
+      "blurb": "Bare-metal STM32 firmware run in QEMU, shown on a board view",
+      "tags": [
+        "Embedded",
+        "C",
+        "Emulation"
+      ],
+      "desc": [
+        "A simulator for the STM32F103 “Blue Pill”. Bare-metal C is compiled with arm-none-eabi-gcc and run in QEMU inside a sandboxed container, then the GPIO activity is read back from a semihosting trace and drawn on a live board view.",
+        "It gives a fast edit-and-run loop for firmware exercises, and tests that need no hardware in the loop."
+      ],
+      "highlights": [
+        "Board model with 44 pins, driven by a semihosting trace from the QEMU run.",
+        "357–469 ms round trip from source to trace over live runs.",
+        "68 unit tests; limits of 15 s, 256 MB, 128 processes and an 8 MiB trace per run."
+      ],
+      "links": [
+        {
+          "label": "Launch Simulator",
+          "url": "https://stm.pontsho-mbizo.co.za/"
+        },
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/mcusim"
+        }
+      ],
+      "image": "images/projects/mcusim.jpg"
+    },
+    {
+      "id": "khula-gantry",
+      "name": "Khula Gantry",
+      "full": "Khula Gantry — automated weeding robot",
+      "color": "#5f7a3a",
+      "label": "KG",
+      "blurb": "Weeding robot for community gardens",
+      "tags": [
+        "Robotics",
+        "Mechanical Design (CAD)",
+        "Onshape"
+      ],
+      "subtitle": "Automated weeding robot | Smallholder & township gardens",
+      "sections": [
+        {
+          "title": "The problem",
+          "body": [
+            "Smallholder farmers and township community gardens in South Africa lose hours every week to hand weeding."
+          ]
+        },
+        {
+          "title": "What we built",
+          "body": [
+            "A low-cost, gantry-mounted robot that travels over a garden bed and removes weeds automatically."
+          ]
+        },
+        {
+          "title": "How it went",
+          "body": [
+            "The gantry was modelled in Onshape, including simulation work, and pitched as a group project in EEE4124C. It was also submitted as a business idea."
+          ]
+        }
+      ],
+      "facts": [
+        {
+          "label": "Course",
+          "value": "EEE4124C — group pitch"
+        },
+        {
+          "label": "Tools",
+          "value": "Onshape"
+        }
+      ],
+      "links": []
+    },
+    {
+      "id": "scope-io",
+      "name": "Scope.io",
+      "full": "Scope.io — interview prep for electronics engineers",
+      "color": "#3a5a8c",
+      "label": "IO",
+      "blurb": "Interview prep with in-browser circuit, STM32 and FPGA simulators",
+      "tags": [
+        "Web",
+        "Embedded",
+        "FPGA / HDL"
+      ],
+      "desc": [
+        "A LeetCode-style platform for electronics engineers. Pick a problem, solve it in an embedded simulator (CircuitJS for analog circuits, fpgasim for Verilog, mcusim for bare-metal C) and get graded automatically against a reference solution.",
+        "Grading runs on the server and takes the test configuration from the stored problem, so a user cannot choose an easier threshold. Analog problems use a blend of time-domain error (70%), frequency-domain error (20%) and key features (10%); digital problems need an exact cycle match."
+      ],
+      "highlights": [
+        "Three simulators behind one problem page: circuits, FPGA and microcontroller.",
+        "26 problems written (9 CircuitJS, 9 FPGA, 8 MCU), 7 live on the early demo.",
+        "126 unit tests; Next.js, Firebase Auth and Firestore on free tiers."
+      ],
+      "links": [
+        {
+          "label": "Early demo",
+          "url": "https://ohmify-pi.vercel.app"
+        },
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/scope-io"
+        }
+      ],
+      "year": "2026",
+      "image": "images/projects/scope-io.jpg"
+    },
+    {
+      "id": "mcc-sizing-tool",
+      "name": "MCC Sizing Tool",
+      "full": "Three-Phase MCC Sizing Tool — Tharisa Minerals",
+      "year": "Dec 2025 – Jan 2026",
+      "color": "#d9a441",
+      "label": "MCC",
+      "blurb": "Three-phase MCC sizing tool adopted at Tharisa Minerals",
+      "tags": [
+        "Power Systems",
+        "MS Excel",
+        "Industrial Engineering"
+      ],
       "desc": [
         "In industrial electrical distribution, a miscalculated cable size or an under-rated busbar isn't just an inefficiency — it can mean a flashover, or an electrician who doesn't go home that evening. That stakes-level thinking shaped this tool.",
         "I built a parameterised three-phase motor control centre (MCC) sizing tool in Excel that takes a transformer, a set of motor loads, their starting methods and feeder lengths, and returns full-load and feeder currents (including largest-motor inrush), voltage drop across feeder cables and busbars, the equivalent power factor of the combined load, and weekly energy consumption and operating cost per motor.",
@@ -45,39 +206,119 @@
       "links": []
     },
     {
-      "id": "sram-capture", "name": "SRAM Data Capture", "full": "SRAM Data Capture (MAX10 FPGA) — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
-      "color": "#c1622f", "label": "FPGA", "tags": ["FPGA", "Verilog", "Defence", "Digital Design"],
+      "id": "sram-capture",
+      "name": "SRAM Data Capture",
+      "full": "SRAM Data Capture (MAX10 FPGA) — Cybicom Atlas Defence",
+      "year": "Jun – Jul 2025",
+      "color": "#c1622f",
+      "label": "FPGA",
+      "blurb": "FPGA capture of data from a legacy battery-backed SRAM",
+      "tags": [
+        "FPGA",
+        "Verilog",
+        "Digital Design",
+        "Timing"
+      ],
       "desc": [
-        "A control system aboard a submarine uses an ASIC connected to a non-volatile SRAM chip (M48T35) to load critical boot and configuration data. The SRAM depends on an internal battery to retain its contents — if that battery fails, the data is lost permanently and the system becomes non-functional. I was tasked with extracting the data without interfering with the system's normal operation.",
-        "The hard constraint was timing: the SRAM only makes valid data available for a 10ns window, roughly 70ns after the Chip Enable and Output Enable lines are asserted — confirmed on an oscilloscope. I designed a custom high-speed capture system on a MAX10 FPGA (DE10-Lite) to hit that window: a PLL generating a 200MHz clock from the 50MHz input, a 4-bit counter incrementing every 5ns to delay sampling to exactly 70ns, logic that watches the enable lines and fires the capture at the right cycle, and registers latching the 8-bit data and 15-bit address.",
-        "To interface safely with the 5V SRAM bus without loading it, I also designed a hardware buffer stage using 8-bit bus buffers as level shifters, protecting both systems and preserving signal integrity."
+        "A legacy embedded control system loads its boot and configuration data from a non-volatile SRAM (M48T35). The SRAM depends on a battery to keep its contents, so the data had to be read out without disturbing the system. I was tasked with extracting it without interfering with normal operation.",
+        "The constraint was timing: the SRAM presents valid data for about 10 ns, roughly 70 ns after Chip Enable and Output Enable go low, as observed on an oscilloscope. I designed a capture system on a MAX10 FPGA (DE10-Lite): a PLL making 200 MHz from the 50 MHz input, a 4-bit timer ticking every 5 ns, logic that fires the capture at the right count, and registers that latch the 8-bit data and 15-bit address. An 8-bit bus-buffer stage level-shifts between the 5 V SRAM bus and the 3.3 V FPGA without loading it.",
+        "On review for the public repo I found a timing bug in my own design: the timer ran freely, so the capture was only well timed for 2 of 16 possible arrival times. I re-armed the timer on every access, added a two-flop synchroniser on the enable lines and wrote a phase-sweep testbench. The fixed design latches correctly at all 16."
       ],
       "highlights": [
-        "Hit a 10ns valid-data window with 70ns timing precision, verified on an oscilloscope.",
-        "Designed and implemented the capture logic in Verilog on an Intel MAX10 FPGA.",
-        "Built a hardware level-shifting interface to safely bridge 5V and FPGA logic levels.",
-        "Non-destructively preserved mission-critical configuration data on legacy submarine hardware."
+        "200 MHz capture with 5 ns timer resolution against a 10 ns data window.",
+        "Phase-sweep testbench: 2 of 16 arrival times correct before the fix, 16 of 16 after (simulation).",
+        "5 V to 3.3 V buffer stage designed to avoid loading the SRAM bus.",
+        "Verified in simulation; not yet re-timed on the board after the fix."
+      ],
+      "links": [
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/SRAM_sampling"
+        }
+      ],
+      "image": "images/projects/sram-capture.png"
+    },
+    {
+      "id": "launchsafe",
+      "name": "LaunchSafe",
+      "full": "LaunchSafe — sea-state and launch-risk monitor",
+      "color": "#2f6f7a",
+      "label": "LS",
+      "blurb": "Sea-state and launch-risk monitor for small-scale fishers",
+      "tags": [
+        "Embedded Systems",
+        "Sensing"
+      ],
+      "desc": [
+        "A sea-state and launch-risk monitor for small-scale fishers."
       ],
       "links": []
     },
     {
-      "id": "udp-motion-sim", "name": "UDP Motion Sim Comms", "full": "UDP Communication for a Motion Simulator — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
-      "color": "#b8863f", "label": "UDP", "tags": ["C", "Networking", "Real-Time Systems"],
+      "id": "forgejo",
+      "name": "Self-hosted Git",
+      "full": "Self-hosted Forgejo Git server",
+      "color": "#c45a2c",
+      "label": "GIT",
+      "blurb": "Forgejo on WSL2/Docker with Tailscale HTTPS",
+      "tags": [
+        "DevOps",
+        "Docker",
+        "Networking"
+      ],
       "desc": [
-        "Cybicom's motion simulator needed a reliable channel to exchange control and status messages with its instructor station. I built a bidirectional, multi-threaded UDP communication system in C using POSIX threads on Windows.",
-        "A client thread sends MessageToMotionSystem packets via sendto() with a custom checksum for data integrity; a server thread listens with recvfrom() and validates incoming data against that same checksum; a main thread launches both and passes socket and message data through custom struct arguments.",
-        "The result is a full-duplex, thread-safe UDP system, robust and extensible enough to be handed off for simulator integration, with documentation to match."
+        "A self-hosted Forgejo Git server, deployed on Windows Server 2022 via WSL2 and Docker behind an IIS reverse proxy, and later moved to Tailscale HTTPS certificates."
       ],
       "highlights": [
-        "Full-duplex, thread-safe UDP client/server architecture in C with POSIX threads.",
-        "Custom checksum validation on both send and receive paths for data integrity.",
-        "Delivered with handover documentation for integration by the simulator team."
+        "Containerised Forgejo on WSL2/Docker, fronted by an IIS reverse proxy.",
+        "Migrated to Tailscale-issued HTTPS certificates.",
+        "Wrote the architecture, user guide and runbook in LaTeX."
       ],
       "links": []
     },
     {
-      "id": "sim-mount", "name": "Simulator Mounting Rig", "full": "Custom Mounting Solution for a Simulation Computer — Cybicom Atlas Defence", "year": "Jun – Jul 2025",
-      "color": "#8c6a3f", "label": "CAD", "tags": ["Mechanical Design", "Fusion 360", "3D Printing"],
+      "id": "udp-motion-sim",
+      "name": "UDP Motion Sim Comms",
+      "full": "UDP Communication for a Motion Simulator — Cybicom Atlas Defence",
+      "year": "Jun – Jul 2025",
+      "color": "#b8863f",
+      "label": "UDP",
+      "blurb": "Multi-threaded UDP client and server in C for a motion simulator",
+      "tags": [
+        "C",
+        "Networking",
+        "Real-Time Systems"
+      ],
+      "desc": [
+        "Cybicom’s motion simulator needed a channel to exchange control and status messages with its instructor station. I built a bidirectional, multi-threaded UDP communication system in C using POSIX threads on Windows.",
+        "A client thread sends control frames with sendto() and a checksum; a server thread receives status frames with recvfrom() and checks the checksum; a main thread launches both. The frames are packed structs (24 bytes out, 42 bytes in), and the payload fields are anonymised in the public repo.",
+        "It was handed over with documentation. When I published it I added a socket-free test for the frame sizes and checksum, and fixed a bug where good frames with a payload sum above 255 were rejected."
+      ],
+      "highlights": [
+        "Two-thread UDP client and server in C, with packed frame structs and an 8-bit checksum.",
+        "Host-side test for frame sizes and checksum truncation (6 checks pass).",
+        "Documented limits: Windows-only, no send pacing, and the checksum range needs checking against the interface spec."
+      ],
+      "links": [
+        {
+          "label": "View source",
+          "url": "https://github.com/PontshoMbizo/motionSystemManager"
+        }
+      ]
+    },
+    {
+      "id": "sim-mount",
+      "name": "Simulator Mounting Rig",
+      "full": "Custom Mounting Solution for a Simulation Computer — Cybicom Atlas Defence",
+      "year": "Jun – Jul 2025",
+      "color": "#8c6a3f",
+      "label": "CAD",
+      "blurb": "Parametric mount for a 4U simulation computer",
+      "tags": [
+        "Mechanical Design",
+        "Fusion 360",
+        "3D Printing"
+      ],
       "desc": [
         "A 4U 19-inch COTS simulation computer needed to be securely mounted inside the instructor station of a motion simulator — but the rack-mounted unit was prone to sliding under the inertial forces the simulator itself produced, and still needed to come out easily for maintenance.",
         "I 3D-printed custom measurement jigs (designed in Fusion 360, sliced in Cura) to accurately map the mounting dimensions, then developed a parametric hinge-and-hook system that secures the unit while keeping it serviceable. M6 bolts handle the shear and tensile loads, sized for the expected forces.",
@@ -91,8 +332,34 @@
       "links": []
     },
     {
-      "id": "network-vacation-work", "name": "Plant Network Restoration", "full": "Network Infrastructure & Restoration — Tharisa Minerals", "year": "Dec 2024 – Jan 2025",
-      "color": "#7a8f4a", "label": "NET", "tags": ["Networking", "Infrastructure", "Cloud"],
+      "id": "deus-natale",
+      "name": "Deus Natale",
+      "full": "Deus Natale — action-RPG",
+      "color": "#6b3f7a",
+      "label": "DN",
+      "blurb": "Action-RPG co-developed in Godot",
+      "tags": [
+        "Game Development",
+        "Godot"
+      ],
+      "desc": [
+        "An action-RPG co-developed in the Godot engine."
+      ],
+      "links": []
+    },
+    {
+      "id": "network-vacation-work",
+      "name": "Plant Network Restoration",
+      "full": "Network Infrastructure & Restoration — Tharisa Minerals",
+      "year": "Dec 2024 – Jan 2025",
+      "color": "#7a8f4a",
+      "label": "NET",
+      "blurb": "Restoring LAN connectivity across plant sites",
+      "tags": [
+        "Networking",
+        "Infrastructure",
+        "Cloud"
+      ],
       "desc": [
         "As a Network Engineer/Artisan vacation student, I worked on restoring and expanding Tharisa's network infrastructure across the plant — bringing critical systems back online, connecting new office spaces, and investigating Microsoft Cloud PC as a potential long-term remote-work solution.",
         "The work was hands-on and infrastructure-first: fibre optic cable installation and configuration, switch-device connectivity, and troubleshooting LAN connections between devices and a central server across multiple sites."
@@ -105,8 +372,17 @@
       "links": []
     },
     {
-      "id": "electrical-instrumentation-vacation", "name": "Electrical & Instrumentation Vacation Work", "full": "Electrical and Instrumentation Technician — Tharisa Minerals", "year": "Dec 2023 – Jan 2024",
-      "color": "#9c7a4a", "label": "E&I", "tags": ["Electrical Maintenance", "Instrumentation"],
+      "id": "electrical-instrumentation-vacation",
+      "name": "Electrical & Instrumentation Vacation Work",
+      "full": "Electrical and Instrumentation Technician — Tharisa Minerals",
+      "year": "Dec 2023 – Jan 2024",
+      "color": "#9c7a4a",
+      "label": "E&I",
+      "blurb": "First placement: plant electrical maintenance",
+      "tags": [
+        "Electrical Maintenance",
+        "Instrumentation"
+      ],
       "desc": [
         "My first placement at Tharisa: shadowing and assisting Electrical Artisans and Instrumentation Technicians in their daily, routine work — inspecting and maintaining plant electrical equipment and control systems.",
         "It was a ground-level introduction to industrial electrical maintenance, and the first time I saw, up close, why the fundamentals I was starting to learn at university actually mattered on a real plant floor."
@@ -121,7 +397,9 @@
   ],
   "posts": [
     {
-      "title": "Getting the 'why' right before the build", "date": "Jun 2026", "tag": "Essay",
+      "title": "Getting the 'why' right before the build",
+      "date": "Jun 2026",
+      "tag": "Essay",
       "pars": [
         "It’s tempting to start building the moment a problem is handed to you. The tools are right there, the deadline is real, and typing feels like progress. I’ve learned to resist that pull.",
         "Before I reach for a tool, I try to understand the fundamentals of what I’m actually solving. Getting the why right — why this approach, why this constraint matters, why the obvious solution fails — saves far more time than moving fast ever does.",
@@ -129,7 +407,9 @@
       ]
     },
     {
-      "title": "What four vacation placements taught me before I could call myself an engineer", "date": "Jan 2026", "tag": "Reflection",
+      "title": "What four vacation placements taught me before I could call myself an engineer",
+      "date": "Jan 2026",
+      "tag": "Reflection",
       "pars": [
         "My first placement at Tharisa had me shadowing electrical artisans, watching them inspect and maintain equipment I barely understood on paper. My most recent placement had me presenting a costing tool I'd built to the project engineering team. Four vacations apart, and the distance between those two versions of me is the whole point of doing this while still studying.",
         "Each placement changed what I paid attention to. Network restoration taught me that infrastructure work is mostly about finding the one broken link in a system that looks fine from the top. The MCC sizing tool taught me that engineers don't trust a single number — they compute it twice, from different assumptions, and interrogate the gap between the two answers.",
@@ -137,6 +417,124 @@
       ]
     }
   ],
-  "skills": ["Embedded Systems", "Digital Signal Processing", "FPGA / HDL", "C / C++", "Python", "Machine Learning", "PCB Design", "High-Performance Computing", "Control Systems", "Power Systems", "Mechanical Design (CAD)"],
-  "contact": { "email": "pontshombizo329@gmail.com", "github": "github.com/PontshoMbizo", "linkedin": "www.linkedin.com/in/pontshombizo" }
+  "skills": [
+    "Embedded Systems",
+    "Digital Signal Processing",
+    "FPGA / HDL",
+    "C / C++",
+    "Python",
+    "Machine Learning",
+    "PCB Design",
+    "High-Performance Computing",
+    "Control Systems",
+    "Power Systems",
+    "Mechanical Design (CAD)"
+  ],
+  "contact": {
+    "email": "pontshombizo329@gmail.com",
+    "github": "github.com/PontshoMbizo",
+    "linkedin": "www.linkedin.com/in/pontshombizo"
+  },
+  "resume": {
+    "location": "Rondebosch, Cape Town",
+    "education": [
+      {
+        "org": "University of Cape Town",
+        "place": "Cape Town",
+        "role": "BSc (Eng) Electrical and Computer Engineering — ECSA-accredited",
+        "dates": "2022 – Present",
+        "points": [
+          "Final year: High Performance Embedded Systems, DSP & ML, Controls & Instrumentation, Law for Engineers",
+          "Design project: oceanographic sensor buoy, through the full systems engineering lifecycle"
+        ]
+      }
+    ],
+    "experience": [
+      {
+        "org": "Tharisa Minerals",
+        "place": "Marikana",
+        "role": "Project Engineering Intern",
+        "dates": "Dec 2025 – Jan 2026",
+        "points": [
+          "Built a parameterised three-phase MCC sizing tool in Excel, validated analytically and against manufacturer data (SANS 1507, WEG IE3 motors)",
+          "Tool adopted by the site team as the baseline for all feeder studies; methodology report accepted by the engineering department"
+        ]
+      },
+      {
+        "org": "Cybicom Atlas Defence",
+        "place": "Simon’s Town",
+        "role": "Engineering Intern",
+        "dates": "Jun – Jul 2025",
+        "points": [
+          "Designed a 200 MHz FPGA capture system (Verilog, Intel MAX10) to non-destructively read a battery-backed SRAM that presents data for about 10 ns, 70 ns after enable, with a 5 ns timer and a 5 V to 3.3 V buffer stage",
+          "Built a bidirectional, multi-threaded UDP communication system in C (POSIX threads) with checksums and handover documentation for a motion simulator",
+          "Designed and 3D-printed a parametric mount in Fusion 360 securing a 4U simulation computer against inertial loads",
+          "Took part in an Acceptance Test Procedure for a full motion simulation system"
+        ]
+      },
+      {
+        "org": "Tharisa Minerals",
+        "place": "Marikana",
+        "role": "Network Engineer/Artisan (Vacation Work)",
+        "dates": "Dec 2024 – Jan 2025",
+        "points": [
+          "Restored LAN connectivity across multiple plant sites; investigated Microsoft Cloud PC as a cost-reduction strategy"
+        ]
+      },
+      {
+        "org": "Tharisa Minerals",
+        "place": "Marikana",
+        "role": "Electrical and Instrumentation Vacation Work",
+        "dates": "Dec 2023 – Jan 2024",
+        "points": [
+          "Assisted Electrical Artisans and Instrumentation Technicians with maintenance and inspection of plant equipment"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "Weeding gantry robot — final-year research project (EEE4022S)",
+        "points": [
+          "Three-axis gantry that photographs a bed, classifies weeds on a Raspberry Pi Zero W and sprays each one; ESP32-C3 closed-loop motion firmware",
+          "245 closed-loop moves within one sensor count (1.07 mm); worst settling 1.86 s against 3 s; positioning within 14 mm against a 20 mm requirement",
+          "Spray-grid detection F1 0.908 for segmentation against 0.654 for YOLOv8n"
+        ]
+      },
+      {
+        "name": "fpgasim and mcusim — in-browser hardware simulators",
+        "points": [
+          "fpgasim: Verilog in the browser through Icarus Verilog in ephemeral, network-less containers, with a Tang Nano 9K board model; 69 unit tests, 272–375 ms round trip",
+          "mcusim: bare-metal C for an STM32F103 Blue Pill in QEMU, GPIO trace drawn on a board view; 68 unit tests, 357–469 ms round trip"
+        ]
+      },
+      {
+        "name": "Scope.io — interview prep for electronics engineers",
+        "points": [
+          "LeetCode-style platform with server-side grading across CircuitJS, fpgasim and mcusim",
+          "26 problems written, 7 live on the early demo; Next.js, Firebase"
+        ]
+      },
+      {
+        "name": "Khula Gantry — automated weeding robot",
+        "points": [
+          "Low-cost gantry robot concept for smallholder and township community gardens; CAD in Onshape, pitched in EEE4124C"
+        ]
+      },
+      {
+        "name": "Self-hosted Forgejo Git server",
+        "points": [
+          "Deployed on Windows Server 2022 via WSL2/Docker behind an IIS reverse proxy, later moved to Tailscale HTTPS certificates",
+          "Wrote the architecture, user guide and runbook in LaTeX"
+        ]
+      }
+    ],
+    "additional": [
+      "Software & Data: C/C++, Python (NumPy, pandas, scikit-learn), MATLAB",
+      "Hardware & Firmware: Verilog HDL, FPGA, STM32, QEMU, KiCad, Intel Quartus Prime",
+      "Design & Tools: Fusion 360, Onshape & FeatureScript, Docker, Git, Linux (Fedora), LaTeX, MS Excel",
+      "Dell Young Leader; UCT Plus Silver award for residence mentoring; Electrical Engineering peer mentor at UCT",
+      "Languages: English, Setswana (native); conversational isiZulu and isiXhosa"
+    ],
+    "photos": []
+  }
 }
