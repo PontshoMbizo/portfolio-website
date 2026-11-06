@@ -101,51 +101,6 @@
       "image": "images/projects/mcusim.jpg"
     },
     {
-      "id": "khula-gantry",
-      "name": "Khula Gantry",
-      "full": "Khula Gantry — automated weeding robot",
-      "color": "#5f7a3a",
-      "label": "KG",
-      "blurb": "Weeding robot for community gardens",
-      "tags": [
-        "Robotics",
-        "Mechanical Design (CAD)",
-        "Onshape"
-      ],
-      "subtitle": "Automated weeding robot | Smallholder & township gardens",
-      "sections": [
-        {
-          "title": "The problem",
-          "body": [
-            "Smallholder farmers and township community gardens in South Africa lose hours every week to hand weeding."
-          ]
-        },
-        {
-          "title": "What we built",
-          "body": [
-            "A low-cost, gantry-mounted robot that travels over a garden bed and removes weeds automatically."
-          ]
-        },
-        {
-          "title": "How it went",
-          "body": [
-            "The gantry was modelled in Onshape, including simulation work, and pitched as a group project in EEE4124C. It was also submitted as a business idea."
-          ]
-        }
-      ],
-      "facts": [
-        {
-          "label": "Course",
-          "value": "EEE4124C — group pitch"
-        },
-        {
-          "label": "Tools",
-          "value": "Onshape"
-        }
-      ],
-      "links": []
-    },
-    {
       "id": "scope-io",
       "name": "Scope.io",
       "full": "Scope.io — interview prep for electronics engineers",
@@ -178,32 +133,6 @@
       ],
       "year": "2026",
       "image": "images/projects/scope-io.jpg"
-    },
-    {
-      "id": "mcc-sizing-tool",
-      "name": "MCC Sizing Tool",
-      "full": "Three-Phase MCC Sizing Tool — Tharisa Minerals",
-      "year": "Dec 2025 – Jan 2026",
-      "color": "#d9a441",
-      "label": "MCC",
-      "blurb": "Three-phase MCC sizing tool adopted at Tharisa Minerals",
-      "tags": [
-        "Power Systems",
-        "MS Excel",
-        "Industrial Engineering"
-      ],
-      "desc": [
-        "In industrial electrical distribution, a miscalculated cable size or an under-rated busbar isn't just an inefficiency — it can mean a flashover, or an electrician who doesn't go home that evening. That stakes-level thinking shaped this tool.",
-        "I built a parameterised three-phase motor control centre (MCC) sizing tool in Excel that takes a transformer, a set of motor loads, their starting methods and feeder lengths, and returns full-load and feeder currents (including largest-motor inrush), voltage drop across feeder cables and busbars, the equivalent power factor of the combined load, and weekly energy consumption and operating cost per motor.",
-        "Every output is computed two ways — analytically from first principles, and from manufacturer tables (SANS 1507 cables, Austral Wright copper busbars, WEG W22 IE3 motor data) — with the percentage deviation between the two built in as an automatic sanity check."
-      ],
-      "highlights": [
-        "Adopted by the Tharisa site engineering team as the baseline tool for all feeder studies.",
-        "Methodology report formally accepted by the engineering department.",
-        "Presented cost-comparison results directly to the project engineering team.",
-        "Built-in analytical-vs-manufacturer-data deviation check catches specification errors before procurement."
-      ],
-      "links": []
     },
     {
       "id": "sram-capture",
@@ -239,44 +168,6 @@
       "image": "images/projects/sram-capture.png"
     },
     {
-      "id": "launchsafe",
-      "name": "LaunchSafe",
-      "full": "LaunchSafe — sea-state and launch-risk monitor",
-      "color": "#2f6f7a",
-      "label": "LS",
-      "blurb": "Sea-state and launch-risk monitor for small-scale fishers",
-      "tags": [
-        "Embedded Systems",
-        "Sensing"
-      ],
-      "desc": [
-        "A sea-state and launch-risk monitor for small-scale fishers."
-      ],
-      "links": []
-    },
-    {
-      "id": "forgejo",
-      "name": "Self-hosted Git",
-      "full": "Self-hosted Forgejo Git server",
-      "color": "#c45a2c",
-      "label": "GIT",
-      "blurb": "Forgejo on WSL2/Docker with Tailscale HTTPS",
-      "tags": [
-        "DevOps",
-        "Docker",
-        "Networking"
-      ],
-      "desc": [
-        "A self-hosted Forgejo Git server, deployed on Windows Server 2022 via WSL2 and Docker behind an IIS reverse proxy, and later moved to Tailscale HTTPS certificates."
-      ],
-      "highlights": [
-        "Containerised Forgejo on WSL2/Docker, fronted by an IIS reverse proxy.",
-        "Migrated to Tailscale-issued HTTPS certificates.",
-        "Wrote the architecture, user guide and runbook in LaTeX."
-      ],
-      "links": []
-    },
-    {
       "id": "udp-motion-sim",
       "name": "UDP Motion Sim Comms",
       "full": "UDP Communication for a Motion Simulator — Cybicom Atlas Defence",
@@ -305,94 +196,6 @@
           "url": "https://github.com/PontshoMbizo/motionSystemManager"
         }
       ]
-    },
-    {
-      "id": "sim-mount",
-      "name": "Simulator Mounting Rig",
-      "full": "Custom Mounting Solution for a Simulation Computer — Cybicom Atlas Defence",
-      "year": "Jun – Jul 2025",
-      "color": "#8c6a3f",
-      "label": "CAD",
-      "blurb": "Parametric mount for a 4U simulation computer",
-      "tags": [
-        "Mechanical Design",
-        "Fusion 360",
-        "3D Printing"
-      ],
-      "desc": [
-        "A 4U 19-inch COTS simulation computer needed to be securely mounted inside the instructor station of a motion simulator — but the rack-mounted unit was prone to sliding under the inertial forces the simulator itself produced, and still needed to come out easily for maintenance.",
-        "I 3D-printed custom measurement jigs (designed in Fusion 360, sliced in Cura) to accurately map the mounting dimensions, then developed a parametric hinge-and-hook system that secures the unit while keeping it serviceable. M6 bolts handle the shear and tensile loads, sized for the expected forces.",
-        "The mounting was verified through visual inspection and mechanical testing: zero visible stress on the unit, and full access via a single bolt release and hook rotation."
-      ],
-      "highlights": [
-        "Designed and 3D-printed custom measurement tooling to capture accurate mounting dimensions.",
-        "Developed a parametric hinge-and-hook mount balancing security against inertial loads with easy serviceability.",
-        "Verified under mechanical testing with zero visible stress and single-action release."
-      ],
-      "links": []
-    },
-    {
-      "id": "deus-natale",
-      "name": "Deus Natale",
-      "full": "Deus Natale — action-RPG",
-      "color": "#6b3f7a",
-      "label": "DN",
-      "blurb": "Action-RPG co-developed in Godot",
-      "tags": [
-        "Game Development",
-        "Godot"
-      ],
-      "desc": [
-        "An action-RPG co-developed in the Godot engine."
-      ],
-      "links": []
-    },
-    {
-      "id": "network-vacation-work",
-      "name": "Plant Network Restoration",
-      "full": "Network Infrastructure & Restoration — Tharisa Minerals",
-      "year": "Dec 2024 – Jan 2025",
-      "color": "#7a8f4a",
-      "label": "NET",
-      "blurb": "Restoring LAN connectivity across plant sites",
-      "tags": [
-        "Networking",
-        "Infrastructure",
-        "Cloud"
-      ],
-      "desc": [
-        "As a Network Engineer/Artisan vacation student, I worked on restoring and expanding Tharisa's network infrastructure across the plant — bringing critical systems back online, connecting new office spaces, and investigating Microsoft Cloud PC as a potential long-term remote-work solution.",
-        "The work was hands-on and infrastructure-first: fibre optic cable installation and configuration, switch-device connectivity, and troubleshooting LAN connections between devices and a central server across multiple sites."
-      ],
-      "highlights": [
-        "Restored LAN connectivity between devices and a server across multiple plant sites.",
-        "Investigated Microsoft Cloud PC as a cost-reduction strategy for remote operations.",
-        "Expanded network access by connecting new office spaces into the existing infrastructure."
-      ],
-      "links": []
-    },
-    {
-      "id": "electrical-instrumentation-vacation",
-      "name": "Electrical & Instrumentation Vacation Work",
-      "full": "Electrical and Instrumentation Technician — Tharisa Minerals",
-      "year": "Dec 2023 – Jan 2024",
-      "color": "#9c7a4a",
-      "label": "E&I",
-      "blurb": "First placement: plant electrical maintenance",
-      "tags": [
-        "Electrical Maintenance",
-        "Instrumentation"
-      ],
-      "desc": [
-        "My first placement at Tharisa: shadowing and assisting Electrical Artisans and Instrumentation Technicians in their daily, routine work — inspecting and maintaining plant electrical equipment and control systems.",
-        "It was a ground-level introduction to industrial electrical maintenance, and the first time I saw, up close, why the fundamentals I was starting to learn at university actually mattered on a real plant floor."
-      ],
-      "highlights": [
-        "Shadowed and assisted qualified Electrical Artisans and Instrumentation Technicians.",
-        "Gained first-hand exposure to routine inspection and maintenance of industrial electrical equipment.",
-        "First industry placement — the starting point for four consecutive years of vacation work in the field."
-      ],
-      "links": []
     }
   ],
   "posts": [
@@ -512,19 +315,6 @@
         "points": [
           "LeetCode-style platform with server-side grading across CircuitJS, fpgasim and mcusim",
           "26 problems written, 7 live on the early demo; Next.js, Firebase"
-        ]
-      },
-      {
-        "name": "Khula Gantry — automated weeding robot",
-        "points": [
-          "Low-cost gantry robot concept for smallholder and township community gardens; CAD in Onshape, pitched in EEE4124C"
-        ]
-      },
-      {
-        "name": "Self-hosted Forgejo Git server",
-        "points": [
-          "Deployed on Windows Server 2022 via WSL2/Docker behind an IIS reverse proxy, later moved to Tailscale HTTPS certificates",
-          "Wrote the architecture, user guide and runbook in LaTeX"
         ]
       }
     ],
