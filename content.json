@@ -245,7 +245,7 @@
         "org": "University of Cape Town",
         "place": "Cape Town",
         "role": "BSc (Eng) Electrical and Computer Engineering — ECSA-accredited",
-        "dates": "2022 – Present",
+        "dates": "2023 – Present",
         "points": [
           "Final year: High Performance Embedded Systems, DSP & ML, Controls & Instrumentation, Law for Engineers",
           "Design project: oceanographic sensor buoy, through the full systems engineering lifecycle"
@@ -316,12 +316,18 @@
           "LeetCode-style platform with server-side grading across CircuitJS, fpgasim and mcusim",
           "26 problems written, 7 live on the early demo; Next.js, Firebase"
         ]
+      },
+      {
+        "name": "fulgurlab — Simulink-style block-diagram simulator",
+        "points": [
+          "React editor and Node server that compiles diagrams to Xcos models and simulates them with headless Scilab in a hardened container; 19 block types checked against analytic answers"
+        ]
       }
     ],
     "additional": [
-      "Software & Data: C/C++, Python (NumPy, pandas, scikit-learn), MATLAB",
-      "Hardware & Firmware: Verilog HDL, FPGA, STM32, QEMU, KiCad, Intel Quartus Prime",
-      "Design & Tools: Fusion 360, Onshape & FeatureScript, Docker, Git, Linux (Fedora), LaTeX, MS Excel",
+      "Software Development: C/C++, Java, Python (NumPy, pandas, scikit-learn, OpenCV), JavaScript/TypeScript (React, Next.js, Node.js), MATLAB, Scilab/Xcos",
+      "Hardware & Firmware: Verilog HDL, FPGA (Intel MAX10, Gowin), STM32, ESP32, Raspberry Pi, QEMU, Icarus Verilog, KiCad, Intel Quartus Prime",
+      "Systems & Tools: Docker/Podman, Firebase, Git and GitHub Actions, Linux (Fedora), ROS 2, Fusion 360, Onshape & FeatureScript, LaTeX, MS Excel",
       "Dell Young Leader; UCT Plus Silver award for residence mentoring; Electrical Engineering peer mentor at UCT",
       "Languages: English, Setswana (native); conversational isiZulu and isiXhosa"
     ],
